@@ -1,22 +1,22 @@
 const PWA_ASSET_VERSION = "0.2.8";
-const PWA_ASSET_CACHE_KEY = "632cb83037d9";
+const PWA_ASSET_CACHE_KEY = "049820fe1353";
 const PWA_ASSET_MANIFEST = {
-  "/pwa/icon.svg": "/pwa/generated/icon.fe1d64d9758c.svg",
-  "/pwa/icon-192.png": "/pwa/generated/icon-192.d7a0049daaa7.png",
-  "/pwa/icon-512.png": "/pwa/generated/icon-512.bd37e5f66cc5.png",
-  "/pwa/icon-maskable-512.png": "/pwa/generated/icon-maskable-512.647d8497d850.png",
-  "/pwa/apple-touch-icon.png": "/pwa/generated/apple-touch-icon.0c62df73d41b.png"
+  "/pwa/icon.svg": "/pwa/generated/icon.b78069f96eed.svg",
+  "/pwa/icon-192.png": "/pwa/generated/icon-192.1b240053ac28.png",
+  "/pwa/icon-512.png": "/pwa/generated/icon-512.9a619dedb644.png",
+  "/pwa/icon-maskable-512.png": "/pwa/generated/icon-maskable-512.58e0ee4d013c.png",
+  "/pwa/apple-touch-icon.png": "/pwa/generated/apple-touch-icon.85d327355031.png"
 };
-const STATIC_CACHE = `deeix-chat-static-${PWA_ASSET_VERSION}-${PWA_ASSET_CACHE_KEY}`;
-const PAGE_CACHE = `deeix-chat-pages-${PWA_ASSET_VERSION}`;
+const STATIC_CACHE = `openachieve-static-${PWA_ASSET_VERSION}-${PWA_ASSET_CACHE_KEY}`;
+const PAGE_CACHE = `openachieve-pages-${PWA_ASSET_VERSION}`;
 const STATIC_CACHE_MAX_ENTRIES = 160;
 const PAGE_CACHE_MAX_ENTRIES = 24;
 
 const APP_SHELL_URLS = [
   "/",
   "/chat",
-  "/logo.svg",
-  "/logo-color.svg",
+  "/openachieve-v2.svg",
+  "/openachieve-white-v2.svg",
   pwaAsset("/pwa/icon.svg"),
   pwaAsset("/pwa/icon-192.png"),
   pwaAsset("/pwa/icon-512.png"),

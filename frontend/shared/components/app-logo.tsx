@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-
 import { useTheme } from "@/shared/components/theme-provider";
+import { APP_BRAND_LOGO, APP_BRAND_LOGO_DARK, APP_BRAND_NAME } from "@/shared/brand";
 
 type AppLogoProps = {
   alt?: string;
@@ -13,7 +13,7 @@ type AppLogoProps = {
 };
 
 export function AppLogo({
-  alt = "DEEIX Chat",
+  alt = APP_BRAND_NAME,
   width,
   height,
   priority,
@@ -23,7 +23,7 @@ export function AppLogo({
 
   return (
     <Image
-      src={resolvedTheme === "dark" ? "/logo-white.svg" : "/logo.svg"}
+      src={resolvedTheme === "dark" ? APP_BRAND_LOGO_DARK : APP_BRAND_LOGO}
       alt={alt}
       width={width}
       height={height}

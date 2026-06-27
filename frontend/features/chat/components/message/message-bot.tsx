@@ -565,8 +565,8 @@ export function AssistantImageGenerationSkeleton({
           warpSpeed={2.1}
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <span className="select-none text-[clamp(1.75rem,7vw,4rem)] font-semibold tracking-[0.18em] text-white/30 mix-blend-overlay drop-shadow-sm">
-            DEEIX
+          <span className="select-none text-[clamp(1.35rem,5vw,2.75rem)] font-semibold tracking-normal text-white/30 mix-blend-overlay drop-shadow-sm">
+            openachieve
           </span>
         </div>
       </div>

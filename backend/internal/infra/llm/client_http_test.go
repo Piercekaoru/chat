@@ -181,6 +181,26 @@ func TestSetOpenRouterAttributionHeaders(t *testing.T) {
 	}
 }
 
+func TestSetOpenRouterAttributionHeadersUsesOpenachieveDefaults(t *testing.T) {
+	req := httptest.NewRequest(http.MethodPost, "https://openrouter.ai/api/v1/chat/completions", nil)
+	setOpenRouterAttributionHeaders(req, RouteConfig{
+		BaseURL: "https://openrouter.ai/api/v1",
+	})
+
+	if got := req.Header.Get("HTTP-Referer"); got != "" {
+		t.Fatalf("expected no default referer header, got %q", got)
+	}
+	if got := req.Header.Get("X-Title"); got != "openachieve" {
+		t.Fatalf("expected default x-title header, got %q", got)
+	}
+	if got := req.Header.Get("X-OpenRouter-Title"); got != "openachieve" {
+		t.Fatalf("expected default x-openrouter-title header, got %q", got)
+	}
+	if got := req.Header.Get("X-OpenRouter-Categories"); got != "general-chat" {
+		t.Fatalf("expected x-openrouter-categories header, got %q", got)
+	}
+}
+
 func TestSetOpenRouterAttributionHeadersSkipsNonOpenRouterBaseURL(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "https://api.example.com/v1/chat/completions", nil)
 	setOpenRouterAttributionHeaders(req, RouteConfig{

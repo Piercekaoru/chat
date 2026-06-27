@@ -527,13 +527,10 @@ func (s *Service) applyCredentialView(view *userview.UserView, item domainuser.U
 }
 
 func shouldRequireInitialUsername(item domainuser.User, adminUsername string) bool {
-	if item.UsernameChangedAt == nil {
-		return true
+	if item.Role != domainuser.RoleSuperAdmin || item.UsernameChangedAt != nil {
+		return false
 	}
-	if item.Role == domainuser.RoleSuperAdmin {
-		return strings.EqualFold(strings.TrimSpace(item.Username), strings.TrimSpace(adminUsername))
-	}
-	return false
+	return strings.EqualFold(strings.TrimSpace(item.Username), strings.TrimSpace(adminUsername))
 }
 
 func (s *Service) CompleteOnboarding(

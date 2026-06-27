@@ -1,5 +1,5 @@
-import { SettingsAbout } from "@/features/settings/components/sections/about/settings-about";
+import { redirect } from "next/navigation";
 
 export default function SettingsAboutPage() {
-  return <SettingsAbout />;
+  redirect("/setting/general");
 }

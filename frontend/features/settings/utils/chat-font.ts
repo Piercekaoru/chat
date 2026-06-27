@@ -2,10 +2,18 @@
 
 import * as React from "react";
 
-export const CHAT_FONT_STORAGE_KEY = "deeix-chat:chat-font";
-export const CHAT_FONT_UPDATED_EVENT = "deeix-chat:chat-font-updated";
-export const CHAT_FONT_WEIGHT_STORAGE_KEY = "deeix-chat:chat-font-weight";
-export const CHAT_FONT_WEIGHT_UPDATED_EVENT = "deeix-chat:chat-font-weight-updated";
+import {
+  readLocalStorageItem,
+  storageEventMatchesKey,
+  writeLocalStorageItem,
+} from "@/shared/lib/storage-key-migration";
+
+export const CHAT_FONT_STORAGE_KEY = "openachieve:chat-font";
+const LEGACY_CHAT_FONT_STORAGE_KEY = "deeix-chat:chat-font";
+export const CHAT_FONT_UPDATED_EVENT = "openachieve:chat-font-updated";
+export const CHAT_FONT_WEIGHT_STORAGE_KEY = "openachieve:chat-font-weight";
+const LEGACY_CHAT_FONT_WEIGHT_STORAGE_KEY = "deeix-chat:chat-font-weight";
+export const CHAT_FONT_WEIGHT_UPDATED_EVENT = "openachieve:chat-font-weight-updated";
 
 export type ChatFontOption = "default" | "songti" | "heiti" | "mono";
 export type ChatFontWeightOption = "regular" | "medium" | "semibold" | "bold";
@@ -28,7 +36,7 @@ function getStoredChatFontPreference(): ChatFontOption {
     return "default";
   }
 
-  const storedValue = window.localStorage.getItem(CHAT_FONT_STORAGE_KEY);
+  const storedValue = readLocalStorageItem(CHAT_FONT_STORAGE_KEY, LEGACY_CHAT_FONT_STORAGE_KEY);
   return isChatFontOption(storedValue) ? storedValue : "default";
 }
 
@@ -37,7 +45,7 @@ function getStoredChatFontWeightPreference(): ChatFontWeightOption {
     return "regular";
   }
 
-  const storedValue = window.localStorage.getItem(CHAT_FONT_WEIGHT_STORAGE_KEY);
+  const storedValue = readLocalStorageItem(CHAT_FONT_WEIGHT_STORAGE_KEY, LEGACY_CHAT_FONT_WEIGHT_STORAGE_KEY);
   return isChatFontWeightOption(storedValue) ? storedValue : "regular";
 }
 
@@ -102,7 +110,7 @@ export function writeChatFontPreference(value: ChatFontOption) {
   chatFontPreferenceLoaded = true;
 
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(CHAT_FONT_STORAGE_KEY, value);
+    writeLocalStorageItem(CHAT_FONT_STORAGE_KEY, value, LEGACY_CHAT_FONT_STORAGE_KEY);
   }
 
   applyChatFontPreference(value);
@@ -126,7 +134,7 @@ export function writeChatFontWeightPreference(value: ChatFontWeightOption) {
   chatFontWeightPreferenceLoaded = true;
 
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(CHAT_FONT_WEIGHT_STORAGE_KEY, value);
+    writeLocalStorageItem(CHAT_FONT_WEIGHT_STORAGE_KEY, value, LEGACY_CHAT_FONT_WEIGHT_STORAGE_KEY);
   }
 
   applyChatFontWeightPreference(value);
@@ -139,7 +147,7 @@ function subscribeChatFontPreference(onStoreChange: () => void) {
   }
 
   function handleStorage(event: StorageEvent) {
-    if (event.key !== CHAT_FONT_STORAGE_KEY) {
+    if (!storageEventMatchesKey(event, CHAT_FONT_STORAGE_KEY, LEGACY_CHAT_FONT_STORAGE_KEY)) {
       return;
     }
 
@@ -168,7 +176,7 @@ function subscribeChatFontWeightPreference(onStoreChange: () => void) {
   }
 
   function handleStorage(event: StorageEvent) {
-    if (event.key !== CHAT_FONT_WEIGHT_STORAGE_KEY) {
+    if (!storageEventMatchesKey(event, CHAT_FONT_WEIGHT_STORAGE_KEY, LEGACY_CHAT_FONT_WEIGHT_STORAGE_KEY)) {
       return;
     }
 

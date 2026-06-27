@@ -2,7 +2,14 @@
 
 import * as React from "react";
 
-const HTML_VISUAL_PROMPT_STORAGE_KEY = "deeix-chat:html-visual-prompt:v1";
+import {
+  readLocalStorageItem,
+  storageEventMatchesKey,
+  writeLocalStorageItem,
+} from "@/shared/lib/storage-key-migration";
+
+const HTML_VISUAL_PROMPT_STORAGE_KEY = "openachieve:html-visual-prompt:v1";
+const LEGACY_HTML_VISUAL_PROMPT_STORAGE_KEY = "deeix-chat:html-visual-prompt:v1";
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
 
 function readHTMLVisualPromptEnabled(): boolean {
@@ -10,7 +17,7 @@ function readHTMLVisualPromptEnabled(): boolean {
     return false;
   }
   try {
-    return window.localStorage.getItem(HTML_VISUAL_PROMPT_STORAGE_KEY) === "true";
+    return readLocalStorageItem(HTML_VISUAL_PROMPT_STORAGE_KEY, LEGACY_HTML_VISUAL_PROMPT_STORAGE_KEY) === "true";
   } catch {
     return false;
   }
@@ -21,7 +28,7 @@ function writeHTMLVisualPromptEnabled(enabled: boolean): void {
     return;
   }
   try {
-    window.localStorage.setItem(HTML_VISUAL_PROMPT_STORAGE_KEY, String(enabled));
+    writeLocalStorageItem(HTML_VISUAL_PROMPT_STORAGE_KEY, String(enabled), LEGACY_HTML_VISUAL_PROMPT_STORAGE_KEY);
   } catch {
     // localStorage may be unavailable in private browsing or strict environments.
   }
@@ -40,7 +47,7 @@ export function useChatVisualPrompt() {
     }
 
     function onStorage(event: StorageEvent) {
-      if (event.key === HTML_VISUAL_PROMPT_STORAGE_KEY) {
+      if (storageEventMatchesKey(event, HTML_VISUAL_PROMPT_STORAGE_KEY, LEGACY_HTML_VISUAL_PROMPT_STORAGE_KEY)) {
         setEnabledState(event.newValue === "true");
       }
     }

@@ -25,6 +25,7 @@ const RESERVED_USERNAMES = new Set([
   "files",
   "help",
   "me",
+  "openachieve",
   "root",
   "settings",
   "support",

@@ -125,12 +125,12 @@ function formatBillingAmountInput(value: number | null | undefined): string {
 
 function modelPricingExportFilename(): string {
   const date = new Date().toISOString().slice(0, 10);
-  return `deeix-chat-model-pricing-${date}.json`;
+  return `openachieve-model-pricing-${date}.json`;
 }
 
 function redemptionCodesExportFilename(): string {
   const date = new Date().toISOString().slice(0, 10);
-  return `deeix-chat-redemption-codes-${date}.json`;
+  return `openachieve-redemption-codes-${date}.json`;
 }
 
 function formatNativeToolPriceInput(priceNanousd: number): string {

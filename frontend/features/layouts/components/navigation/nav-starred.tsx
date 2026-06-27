@@ -56,7 +56,8 @@ import { cn } from "@/lib/utils"
 
 const STARRED_SKELETON_WIDTHS = ["71%", "59%", "66%", "54%", "70%"] as const
 const MAX_VISIBLE_STARRED = 5
-const STARRED_OPEN_STORAGE_KEY = "deeix.sidebar.starred.open"
+const STARRED_OPEN_STORAGE_KEY = "openachieve:sidebar:starred:open"
+const LEGACY_STARRED_OPEN_STORAGE_KEY = "deeix.sidebar.starred.open"
 
 function toSidebarConversationItem(item: ConversationDTO, untitled: string): SidebarConversationItemModel {
   return {
@@ -101,7 +102,7 @@ export function NavStarred() {
   const [shareTarget, setShareTarget] = React.useState<{ publicID: string; title: string } | null>(null)
   const [renameValue, setRenameValue] = React.useState("")
   const [autoRenamingPublicID, setAutoRenamingPublicID] = React.useState<string | null>(null)
-  const [starredOpen, setStarredOpen] = useStoredBoolean(STARRED_OPEN_STORAGE_KEY, true)
+  const [starredOpen, setStarredOpen] = useStoredBoolean(STARRED_OPEN_STORAGE_KEY, true, LEGACY_STARRED_OPEN_STORAGE_KEY)
   const listContainerRef = React.useRef<HTMLDivElement | null>(null)
   const deleteFilesID = React.useId()
   const starredContentID = React.useId()

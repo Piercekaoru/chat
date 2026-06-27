@@ -1,5 +1,5 @@
-import { AdminAboutPage } from "@/features/admin/components/sections/about/admin-about";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <AdminAboutPage />;
+  redirect("/admin/users");
 }

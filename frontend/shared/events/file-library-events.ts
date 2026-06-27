@@ -15,9 +15,9 @@ export type FileLibraryInvalidatedDetail = {
   nonce: string;
 };
 
-const FILE_LIBRARY_INVALIDATED_EVENT = "deeix-chat:file-library-invalidated";
-const FILE_LIBRARY_INVALIDATED_STORAGE_KEY = "deeix-chat:file-library-invalidated:payload";
-const FILE_LIBRARY_BROADCAST_CHANNEL = "deeix-chat:file-library";
+const FILE_LIBRARY_INVALIDATED_EVENT = "openachieve:file-library-invalidated";
+const FILE_LIBRARY_INVALIDATED_STORAGE_KEY = "openachieve:file-library-invalidated:payload";
+const FILE_LIBRARY_BROADCAST_CHANNEL = "openachieve:file-library";
 
 type FileLibraryInvalidatedInput = {
   reason: FileLibraryInvalidationReason;

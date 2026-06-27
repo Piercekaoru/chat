@@ -18,6 +18,8 @@ import {
   DEFAULT_LOGIN_OPTIONS,
   DEFAULT_LOGIN_SETTINGS,
   isTwoFactorChallengeExpired,
+  LEGACY_TWO_FACTOR_CHALLENGE_STORAGE_KEY,
+  LEGACY_TWO_FACTOR_METHODS_STORAGE_KEY,
   normalizeRegisterCode,
   normalizeTwoFactorInput,
   providerPKCEStorageKey,
@@ -120,11 +122,17 @@ export function useLoginPage({ nextPath }: UseLoginPageInput) {
   }, [resolvedNextPath, router]);
 
   React.useEffect(() => {
-    const challenge = window.sessionStorage.getItem(TWO_FACTOR_CHALLENGE_STORAGE_KEY);
+    const challenge =
+      window.sessionStorage.getItem(TWO_FACTOR_CHALLENGE_STORAGE_KEY) ??
+      window.sessionStorage.getItem(LEGACY_TWO_FACTOR_CHALLENGE_STORAGE_KEY);
     if (challenge) {
       window.sessionStorage.removeItem(TWO_FACTOR_CHALLENGE_STORAGE_KEY);
-      const rawMethods = window.sessionStorage.getItem(TWO_FACTOR_METHODS_STORAGE_KEY);
+      window.sessionStorage.removeItem(LEGACY_TWO_FACTOR_CHALLENGE_STORAGE_KEY);
+      const rawMethods =
+        window.sessionStorage.getItem(TWO_FACTOR_METHODS_STORAGE_KEY) ??
+        window.sessionStorage.getItem(LEGACY_TWO_FACTOR_METHODS_STORAGE_KEY);
       window.sessionStorage.removeItem(TWO_FACTOR_METHODS_STORAGE_KEY);
+      window.sessionStorage.removeItem(LEGACY_TWO_FACTOR_METHODS_STORAGE_KEY);
       const parsedMethods = parseSecurityVerificationMethods(rawMethods);
       setTwoFactorChallengeToken(challenge);
       setTwoFactorVerificationMethods(parsedMethods);

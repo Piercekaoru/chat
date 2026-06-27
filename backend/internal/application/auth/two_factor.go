@@ -33,6 +33,7 @@ const (
 	twoFactorChallengeTokenType = "2fa_challenge"
 	twoFactorChallengeTTL       = 5 * time.Minute
 	twoFactorSetupTTL           = 30 * time.Minute
+	twoFactorIssuerName         = "openachieve"
 	totpStepSeconds             = int64(30)
 	totpDigits                  = 6
 	totpValidationWindow        = int64(1)
@@ -272,7 +273,7 @@ func (s *Service) StartCurrentTwoFactorSetup(ctx context.Context, userID uint) (
 		}
 		return &TwoFactorSetupStartResult{
 			Secret:     secret,
-			OTPAuthURL: buildOTPAuthURL("DEEIX Chat", firstNonEmpty(item.Email, item.Username), secret),
+			OTPAuthURL: buildOTPAuthURL(twoFactorIssuerName, firstNonEmpty(item.Email, item.Username), secret),
 			ExpiresAt:  *current.TOTPSetupExpiresAt,
 		}, nil
 	}
@@ -296,7 +297,7 @@ func (s *Service) StartCurrentTwoFactorSetup(ctx context.Context, userID uint) (
 	}
 	return &TwoFactorSetupStartResult{
 		Secret:     secret,
-		OTPAuthURL: buildOTPAuthURL("DEEIX Chat", firstNonEmpty(item.Email, item.Username), secret),
+		OTPAuthURL: buildOTPAuthURL(twoFactorIssuerName, firstNonEmpty(item.Email, item.Username), secret),
 		ExpiresAt:  expiresAt,
 	}, nil
 }

@@ -166,7 +166,7 @@ ${previewHead("CSS Preview")}
 <body>
   <main class="artifact-preview">
     <section class="preview-panel">
-      <p class="eyebrow">DEEIX Artifact</p>
+      <p class="eyebrow">openachieve Artifact</p>
       <h1>Preview Surface</h1>
       <p>Generated CSS is applied to this isolated document.</p>
       <div class="preview-row">

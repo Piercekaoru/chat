@@ -92,7 +92,34 @@ func (s *Service) Seed(ctx context.Context, cfg config.Config) error {
 	if err != nil {
 		return err
 	}
-	return s.repo.UpsertWithDescription(ctx, items)
+	if err := s.repo.UpsertWithDescription(ctx, items); err != nil {
+		return err
+	}
+	return s.migrateLegacyDefaultSettings(ctx)
+}
+
+func (s *Service) migrateLegacyDefaultSettings(ctx context.Context) error {
+	authSettings, err := s.repo.ListByNamespace(ctx, "auth")
+	if err != nil {
+		return err
+	}
+	for _, item := range authSettings {
+		if item.Key != "login_page_title" || strings.TrimSpace(item.Value) != legacyLoginPageTitle {
+			continue
+		}
+		items, err := s.encryptSettingsForStorage([]domainsettings.SystemSetting{{
+			Namespace:   "auth",
+			Key:         "login_page_title",
+			Value:       defaultLoginPageTitle,
+			ValueType:   "string",
+			Description: item.Description,
+		}})
+		if err != nil {
+			return err
+		}
+		return s.repo.Upsert(ctx, items)
+	}
+	return nil
 }
 
 // ListAll 查询全部配置，按 namespace 分组。

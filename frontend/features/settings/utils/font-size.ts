@@ -2,8 +2,15 @@
 
 import * as React from "react";
 
-export const FONT_SIZE_STORAGE_KEY = "deeix-chat:font-size";
-export const FONT_SIZE_UPDATED_EVENT = "deeix-chat:font-size-updated";
+import {
+  readLocalStorageItem,
+  storageEventMatchesKey,
+  writeLocalStorageItem,
+} from "@/shared/lib/storage-key-migration";
+
+export const FONT_SIZE_STORAGE_KEY = "openachieve:font-size";
+const LEGACY_FONT_SIZE_STORAGE_KEY = "deeix-chat:font-size";
+export const FONT_SIZE_UPDATED_EVENT = "openachieve:font-size-updated";
 
 export type FontSizeOption = "small" | "standard" | "medium" | "large";
 
@@ -19,7 +26,7 @@ function getStoredFontSizePreference(): FontSizeOption {
     return "standard";
   }
 
-  const storedValue = window.localStorage.getItem(FONT_SIZE_STORAGE_KEY);
+  const storedValue = readLocalStorageItem(FONT_SIZE_STORAGE_KEY, LEGACY_FONT_SIZE_STORAGE_KEY);
   return isFontSizeOption(storedValue) ? storedValue : "standard";
 }
 
@@ -58,7 +65,7 @@ export function writeFontSizePreference(value: FontSizeOption) {
   fontSizePreferenceLoaded = true;
 
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(FONT_SIZE_STORAGE_KEY, value);
+    writeLocalStorageItem(FONT_SIZE_STORAGE_KEY, value, LEGACY_FONT_SIZE_STORAGE_KEY);
   }
 
   applyFontSizePreference(value);
@@ -71,7 +78,7 @@ function subscribeFontSizePreference(onStoreChange: () => void) {
   }
 
   function handleStorage(event: StorageEvent) {
-    if (event.key !== FONT_SIZE_STORAGE_KEY) {
+    if (!storageEventMatchesKey(event, FONT_SIZE_STORAGE_KEY, LEGACY_FONT_SIZE_STORAGE_KEY)) {
       return;
     }
 

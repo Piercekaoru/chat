@@ -2,7 +2,7 @@
 
 import type { UserDTO } from "@/shared/api/auth.types";
 
-export const USER_PROFILE_UPDATED_EVENT = "deeix-chat:user-profile-updated";
+export const USER_PROFILE_UPDATED_EVENT = "openachieve:user-profile-updated";
 
 export function dispatchUserProfileUpdated(user: UserDTO) {
   if (typeof window === "undefined") {

@@ -466,7 +466,7 @@ func Load() Config {
 	yc := loadYAML()
 	return Config{
 		// 静态基础设施
-		AppName:                      envOr("APP_NAME", yc.App.Name, "DEEIX Chat"),
+		AppName:                      envOr("APP_NAME", yc.App.Name, "openachieve"),
 		Env:                          normalizeEnv(envOrNonEmpty("APP_ENV", yc.App.Env, "prod")),
 		HTTPPort:                     envOr("HTTP_PORT", yc.Server.HTTPPort, "8080"),
 		CORSAllowOrigin:              envOr("CORS_ALLOW_ORIGIN", yc.Server.CORSAllowOrigin, "http://127.0.0.1:8080,http://localhost:8080"),

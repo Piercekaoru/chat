@@ -1,6 +1,10 @@
 "use client";
 
-const RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY = "deeix-chat:response-completion-notifications";
+import { APP_BRAND_NAME } from "@/shared/brand";
+import { readLocalStorageItem, writeLocalStorageItem } from "@/shared/lib/storage-key-migration";
+
+const RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY = "openachieve:response-completion-notifications";
+const LEGACY_RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY = "deeix-chat:response-completion-notifications";
 const NOTIFICATION_BODY_MAX_LENGTH = 140;
 
 type ResponseCompletionNotificationInput = {
@@ -44,14 +48,21 @@ export function readResponseCompletionNotificationsEnabled() {
   if (typeof window === "undefined") {
     return false;
   }
-  return window.localStorage.getItem(RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY) === "true";
+  return readLocalStorageItem(
+    RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY,
+    LEGACY_RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY,
+  ) === "true";
 }
 
 export function writeResponseCompletionNotificationsEnabled(enabled: boolean) {
   if (typeof window === "undefined") {
     return;
   }
-  window.localStorage.setItem(RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY, String(enabled));
+  writeLocalStorageItem(
+    RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY,
+    String(enabled),
+    LEGACY_RESPONSE_COMPLETION_NOTIFICATIONS_STORAGE_KEY,
+  );
 }
 
 export async function enableResponseCompletionNotifications() {
@@ -93,7 +104,7 @@ export function notifyResponseCompletion(input: ResponseCompletionNotificationIn
   }
 
   const conversationTitle = normalizeString(input.conversationTitle);
-  const notification = new Notification(conversationTitle || "DEEIX Chat", {
+  const notification = new Notification(conversationTitle || APP_BRAND_NAME, {
     body: normalizeNotificationBody(normalizeString(input.content)),
     tag: normalizeString(input.conversationPublicID, `response-completion:${Date.now()}`),
     icon: "/favicon.ico",

@@ -18,7 +18,7 @@ const (
 var reservedUsernames = map[string]struct{}{
 	"admin": {}, "api": {}, "auth": {}, "billing": {}, "chat": {}, "deeix_chat": {}, "deeix-chat": {},
 	"files": {}, "help": {}, "me": {}, "root": {}, "settings": {}, "support": {},
-	"system": {}, "user": {}, "users": {},
+	"system": {}, "user": {}, "users": {}, "openachieve": {},
 }
 
 func NormalizeUsername(raw string) (string, error) {

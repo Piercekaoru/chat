@@ -54,9 +54,15 @@ import type { FileObjectDTO } from "@/shared/api/file.types";
 import type { MCPToolDTO } from "@/shared/api/mcp.types";
 import type { SkillSummaryDTO } from "@/shared/api/skills.types";
 import { useTheme } from "@/shared/components/theme-provider";
+import {
+  readLocalStorageItem,
+  removeLocalStorageItem,
+  writeLocalStorageItem,
+} from "@/shared/lib/storage-key-migration";
 import { cn } from "@/lib/utils";
 
-const MODEL_OPTIONS_STORAGE_PREFIX = "deeix-chat:chat-model-options:";
+const MODEL_OPTIONS_STORAGE_PREFIX = "openachieve:chat-model-options:";
+const LEGACY_MODEL_OPTIONS_STORAGE_PREFIX = "deeix-chat:chat-model-options:";
 const DEFAULT_MCP_TOOLS_SETTING_KEY = "chat.default_mcp_tool_ids";
 const EMPTY_CONVERSATION_OPTIONS: ConversationOptions = {};
 function dragEventContainsFiles(event: React.DragEvent<HTMLElement>): boolean {
@@ -71,12 +77,16 @@ function modelOptionsStorageKey(platformModelName: string): string {
   return `${MODEL_OPTIONS_STORAGE_PREFIX}${encodeURIComponent(platformModelName)}`;
 }
 
+function legacyModelOptionsStorageKey(platformModelName: string): string {
+  return `${LEGACY_MODEL_OPTIONS_STORAGE_PREFIX}${encodeURIComponent(platformModelName)}`;
+}
+
 function readCachedModelOptions(platformModelName: string): ConversationOptions | null {
   if (typeof window === "undefined") {
     return null;
   }
   try {
-    const raw = window.localStorage.getItem(modelOptionsStorageKey(platformModelName));
+    const raw = readLocalStorageItem(modelOptionsStorageKey(platformModelName), legacyModelOptionsStorageKey(platformModelName));
     if (!raw) {
       return null;
     }
@@ -92,7 +102,11 @@ function writeCachedModelOptions(platformModelName: string, options: Conversatio
     return;
   }
   try {
-    window.localStorage.setItem(modelOptionsStorageKey(platformModelName), JSON.stringify(sanitizeConversationOptions(options)));
+    writeLocalStorageItem(
+      modelOptionsStorageKey(platformModelName),
+      JSON.stringify(sanitizeConversationOptions(options)),
+      legacyModelOptionsStorageKey(platformModelName),
+    );
   } catch {
     // localStorage may be unavailable in private browsing or strict environments.
   }
@@ -103,7 +117,7 @@ function removeCachedModelOptions(platformModelName: string): void {
     return;
   }
   try {
-    window.localStorage.removeItem(modelOptionsStorageKey(platformModelName));
+    removeLocalStorageItem(modelOptionsStorageKey(platformModelName), legacyModelOptionsStorageKey(platformModelName));
   } catch {
     // localStorage may be unavailable in private browsing or strict environments.
   }

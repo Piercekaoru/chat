@@ -115,20 +115,29 @@ const PROJECT_TREE_ACCORDION_MASK_STYLE = {
 } satisfies React.CSSProperties
 const PROJECT_CREATE_ACTION_CLASS =
   "static size-7 shrink-0 opacity-0 transition-[background-color,color,opacity,transform] duration-150 group-hover/project-create:opacity-100 group-focus-within/project-create:opacity-100"
-const PROJECTS_OPEN_STORAGE_KEY = "deeix.sidebar.projects.open"
-const PROJECT_EXPANDED_IDS_STORAGE_KEY = "deeix.sidebar.projects.expanded"
+const PROJECTS_OPEN_STORAGE_KEY = "openachieve:sidebar:projects:open"
+const LEGACY_PROJECTS_OPEN_STORAGE_KEY = "deeix.sidebar.projects.open"
+const PROJECT_EXPANDED_IDS_STORAGE_KEY = "openachieve:sidebar:projects:expanded"
+const LEGACY_PROJECT_EXPANDED_IDS_STORAGE_KEY = "deeix.sidebar.projects.expanded"
 
 type ProjectFolderIconHandle = {
   startAnimation: () => void
   stopAnimation: () => void
 }
 
-function readStoredProjectIDSet(storageKey: string): Set<string> {
+function readStoredProjectIDSet(storageKey: string, legacyStorageKey?: string): Set<string> {
   if (typeof window === "undefined") {
     return new Set()
   }
 
   try {
+    const legacyValue = legacyStorageKey ? window.localStorage.getItem(legacyStorageKey) : null
+    if (window.localStorage.getItem(storageKey) === null && legacyValue !== null) {
+      window.localStorage.setItem(storageKey, legacyValue)
+    }
+    if (legacyStorageKey && legacyValue !== null) {
+      window.localStorage.removeItem(legacyStorageKey)
+    }
     const parsed = JSON.parse(window.localStorage.getItem(storageKey) ?? "[]") as unknown
     if (!Array.isArray(parsed)) {
       return new Set()
@@ -139,13 +148,13 @@ function readStoredProjectIDSet(storageKey: string): Set<string> {
   }
 }
 
-function hasStoredProjectIDSet(storageKey: string): boolean {
+function hasStoredProjectIDSet(storageKey: string, legacyStorageKey?: string): boolean {
   if (typeof window === "undefined") {
     return false
   }
 
   try {
-    return window.localStorage.getItem(storageKey) !== null
+    return window.localStorage.getItem(storageKey) !== null || (!!legacyStorageKey && window.localStorage.getItem(legacyStorageKey) !== null)
   } catch {
     return false
   }
@@ -369,18 +378,22 @@ export function NavProjects() {
   const [shareTarget, setShareTarget] = React.useState<{ publicID: string; title: string } | null>(null)
   const [renameValue, setRenameValue] = React.useState("")
   const [autoRenamingConversationID, setAutoRenamingConversationID] = React.useState<string | null>(null)
-  const [expandedProjectIDs, setExpandedProjectIDs] = React.useState<Set<string>>(() => readStoredProjectIDSet(PROJECT_EXPANDED_IDS_STORAGE_KEY))
+  const [expandedProjectIDs, setExpandedProjectIDs] = React.useState<Set<string>>(() =>
+    readStoredProjectIDSet(PROJECT_EXPANDED_IDS_STORAGE_KEY, LEGACY_PROJECT_EXPANDED_IDS_STORAGE_KEY),
+  )
   const [projectConversationState, setProjectConversationState] = React.useState<ProjectConversationStateMap>({})
   const [openProjectMenuID, setOpenProjectMenuID] = React.useState<string | null>(null)
   const [hoveredProjectMenuID, setHoveredProjectMenuID] = React.useState<string | null>(null)
   const [hoveredProjectCreateID, setHoveredProjectCreateID] = React.useState<string | null>(null)
   const [hoveredProjectRowID, setHoveredProjectRowID] = React.useState<string | null>(null)
   const [focusedProjectRowID, setFocusedProjectRowID] = React.useState<string | null>(null)
-  const [projectsOpen, setProjectsOpen] = useStoredBoolean(PROJECTS_OPEN_STORAGE_KEY, true)
+  const [projectsOpen, setProjectsOpen] = useStoredBoolean(PROJECTS_OPEN_STORAGE_KEY, true, LEGACY_PROJECTS_OPEN_STORAGE_KEY)
   const projectConversationStateRef = React.useRef(projectConversationState)
   const expandedProjectIDsRef = React.useRef(expandedProjectIDs)
   const activeRevealedProjectIDsRef = React.useRef(new Set<string>())
-  const hasStoredExpandedProjectIDsRef = React.useRef(hasStoredProjectIDSet(PROJECT_EXPANDED_IDS_STORAGE_KEY))
+  const hasStoredExpandedProjectIDsRef = React.useRef(
+    hasStoredProjectIDSet(PROJECT_EXPANDED_IDS_STORAGE_KEY, LEGACY_PROJECT_EXPANDED_IDS_STORAGE_KEY),
+  )
   const activeConversationProjectID = React.useMemo(
     () => items.find((item) => item.publicID === activeConversationID)?.projectID ?? "",
     [activeConversationID, items],

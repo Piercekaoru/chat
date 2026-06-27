@@ -2,7 +2,14 @@
 
 import * as React from "react";
 
-const CHAT_SCROLL_STORAGE_KEY = "deeix-chat:chat-scroll:v1";
+import {
+  readLocalStorageItem,
+  removeLocalStorageItem,
+  writeLocalStorageItem,
+} from "@/shared/lib/storage-key-migration";
+
+const CHAT_SCROLL_STORAGE_KEY = "openachieve:chat-scroll:v1";
+const LEGACY_CHAT_SCROLL_STORAGE_KEY = "deeix-chat:chat-scroll:v1";
 const BOTTOM_THRESHOLD_PX = 96;
 const TOP_LOAD_THRESHOLD_PX = 48;
 const SCROLL_POSITION_PERSIST_DELAY_MS = 180;
@@ -24,7 +31,7 @@ function readScrollStore(): PersistedScrollStore {
   }
 
   try {
-    const raw = window.localStorage.getItem(CHAT_SCROLL_STORAGE_KEY);
+    const raw = readLocalStorageItem(CHAT_SCROLL_STORAGE_KEY, LEGACY_CHAT_SCROLL_STORAGE_KEY);
     if (!raw) {
       return {};
     }
@@ -45,10 +52,10 @@ function writeScrollStore(store: PersistedScrollStore) {
 
   try {
     if (Object.keys(store).length === 0) {
-      window.localStorage.removeItem(CHAT_SCROLL_STORAGE_KEY);
+      removeLocalStorageItem(CHAT_SCROLL_STORAGE_KEY, LEGACY_CHAT_SCROLL_STORAGE_KEY);
       return;
     }
-    window.localStorage.setItem(CHAT_SCROLL_STORAGE_KEY, JSON.stringify(store));
+    writeLocalStorageItem(CHAT_SCROLL_STORAGE_KEY, JSON.stringify(store), LEGACY_CHAT_SCROLL_STORAGE_KEY);
   } catch {
     // Ignore storage write failures and keep scrolling usable.
   }

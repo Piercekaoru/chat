@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	openRouterDefaultAttributionReferer = "https://deeix.com"
-	openRouterDefaultAttributionTitle   = "DEEIX Chat"
+	openRouterDefaultAttributionReferer = ""
+	openRouterDefaultAttributionTitle   = "openachieve"
 	openRouterDefaultCategories         = "general-chat"
 )
 
@@ -329,7 +329,9 @@ func setOpenRouterAttributionHeaders(req *http.Request, route RouteConfig) {
 		if referer == "" {
 			referer = openRouterDefaultAttributionReferer
 		}
-		req.Header.Set("HTTP-Referer", referer)
+		if referer != "" {
+			req.Header.Set("HTTP-Referer", referer)
+		}
 	}
 	if !hasAdditionalHeader(route.HeadersJSON, "X-Title", "X-OpenRouter-Title") &&
 		(req.Header.Get("X-Title") == "" || req.Header.Get("X-OpenRouter-Title") == "") {

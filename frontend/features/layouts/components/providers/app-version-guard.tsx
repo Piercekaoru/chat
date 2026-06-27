@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { getAppVersion, resolveAppBuildID } from "@/shared/api/app-version";
 
-const APP_VERSION_TOAST_ID = "deeix-chat:app-version-refresh";
+const APP_VERSION_TOAST_ID = "openachieve:app-version-refresh";
 const APP_VERSION_CHECK_INTERVAL_MS = 10 * 60 * 1000;
 
 type CheckReason = "initial" | "interval" | "focus" | "visible";

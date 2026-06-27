@@ -8,9 +8,9 @@ import (
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/shared/buildinfo"
 )
 
-// @title DEEIX Chat API
+// @title openachieve API
 // @version 0.2.8
-// @description DEEIX Chat 后端 API 文档
+// @description openachieve backend API documentation
 // @BasePath /api/v1
 // @securityDefinitions.apikey BearerAuth
 // @in header

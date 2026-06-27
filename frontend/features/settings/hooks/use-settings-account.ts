@@ -95,7 +95,7 @@ type UseSettingsAccountResult = {
 const VERIFICATION_CODE_RESEND_COOLDOWN_MS = 60_000;
 
 function providerPKCEStorageKey(slug: string): string {
-  return `deeix-chat:oauth:${slug}:pkce_verifier`;
+  return `openachieve:oauth:${slug}:pkce_verifier`;
 }
 
 function base64URL(bytes: Uint8Array): string {

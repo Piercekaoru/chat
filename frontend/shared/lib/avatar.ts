@@ -78,7 +78,7 @@ export function resolveAvatarSeed(source?: AvatarSeedSource) {
     normalizeString(source?.publicID) ||
     normalizeString(source?.username) ||
     normalizeString(source?.displayName) ||
-    "deeix-chat-user"
+    "openachieve-user"
   );
 }
 

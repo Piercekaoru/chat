@@ -1,7 +1,7 @@
 "use client";
 
-const OPEN_ANNOUNCEMENTS_EVENT = "deeix-chat:open-announcements";
-const ANNOUNCEMENT_UNREAD_CHANGED_EVENT = "deeix-chat:announcement-unread-changed";
+const OPEN_ANNOUNCEMENTS_EVENT = "openachieve:open-announcements";
+const ANNOUNCEMENT_UNREAD_CHANGED_EVENT = "openachieve:announcement-unread-changed";
 
 let announcementUnread = false;
 

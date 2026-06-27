@@ -4,18 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CircleArrowUp } from "lucide-react";
 
-import packageMeta from "@/package.json";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ADMIN_SECTIONS, type AdminSection } from "@/features/admin/model/admin-sections";
-import { AdminUpdateTooltipContent } from "@/features/admin/components/admin-update-tooltip-content";
-import {
-  getCachedLatestReleaseSnapshot,
-  getServerLatestReleaseSnapshot,
-  resolveAvailableRelease,
-  subscribeLatestReleaseChange,
-} from "@/features/admin/model/update-check";
 import { cn } from "@/lib/utils";
 
 const ADMIN_SECTION_LABEL_KEYS: Record<AdminSection, string> = {
@@ -29,7 +19,6 @@ const ADMIN_SECTION_LABEL_KEYS: Record<AdminSection, string> = {
   "login-settings": "sections.loginSettings",
   "conversation-settings": "sections.conversationSettings",
   "chat-files": "sections.chatFiles",
-  about: "sections.about",
 };
 
 function resolveActiveSectionFromPath(pathname: string, basePath: string): AdminSection {
@@ -48,16 +37,9 @@ export function AdminSidebar({
   basePath: string;
 }) {
   const t = useTranslations("adminUsers");
-  const tAbout = useTranslations("adminUsers.aboutPage");
   const pathname = usePathname();
   const activeSection = resolveActiveSectionFromPath(pathname, basePath);
   const activeLinkRef = React.useRef<HTMLAnchorElement | null>(null);
-  const cachedLatestRelease = React.useSyncExternalStore(
-    subscribeLatestReleaseChange,
-    getCachedLatestReleaseSnapshot,
-    getServerLatestReleaseSnapshot,
-  );
-  const updateRelease = resolveAvailableRelease(packageMeta.version, cachedLatestRelease);
   const sectionLabel = React.useCallback(
     (id: AdminSection, fallback: string) => {
       return t(ADMIN_SECTION_LABEL_KEYS[id]) || fallback;
@@ -101,18 +83,6 @@ export function AdminSidebar({
                 )}
               >
                 <span className="truncate">{sectionLabel(item.id, item.label)}</span>
-                {item.id === "about" && updateRelease ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="ml-auto inline-flex size-4 shrink-0 items-center justify-center text-rose-500">
-                        <CircleArrowUp className="size-3.5" aria-label={tAbout("updateAvailableIndicator")} />
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <AdminUpdateTooltipContent updateRelease={updateRelease} />
-                    </TooltipContent>
-                  </Tooltip>
-                ) : null}
               </Link>
             );
           })}

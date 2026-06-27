@@ -3,8 +3,14 @@
 import * as React from "react";
 
 import type { PendingAttachment } from "@/features/chat/types/chat-runtime";
+import {
+  readLocalStorageItem,
+  removeLocalStorageItem,
+  writeLocalStorageItem,
+} from "@/shared/lib/storage-key-migration";
 
-const CHAT_COMPOSER_STORAGE_KEY = "deeix-chat:chat-composer:v1";
+const CHAT_COMPOSER_STORAGE_KEY = "openachieve:chat-composer:v1";
+const LEGACY_CHAT_COMPOSER_STORAGE_KEY = "deeix-chat:chat-composer:v1";
 const NEW_CONVERSATION_COMPOSER_KEY = "__new__";
 
 type PersistedAttachment = Pick<
@@ -105,7 +111,7 @@ function readComposerStore(): PersistedComposerStore {
   }
 
   try {
-    const raw = window.localStorage.getItem(CHAT_COMPOSER_STORAGE_KEY);
+    const raw = readLocalStorageItem(CHAT_COMPOSER_STORAGE_KEY, LEGACY_CHAT_COMPOSER_STORAGE_KEY);
     if (!raw) {
       return {};
     }
@@ -145,10 +151,10 @@ function writeComposerStore(store: PersistedComposerStore) {
 
   try {
     if (Object.keys(store).length === 0) {
-      window.localStorage.removeItem(CHAT_COMPOSER_STORAGE_KEY);
+      removeLocalStorageItem(CHAT_COMPOSER_STORAGE_KEY, LEGACY_CHAT_COMPOSER_STORAGE_KEY);
       return;
     }
-    window.localStorage.setItem(CHAT_COMPOSER_STORAGE_KEY, JSON.stringify(store));
+    writeLocalStorageItem(CHAT_COMPOSER_STORAGE_KEY, JSON.stringify(store), LEGACY_CHAT_COMPOSER_STORAGE_KEY);
   } catch {
     // Ignore storage quota / serialization issues and keep runtime state usable.
   }

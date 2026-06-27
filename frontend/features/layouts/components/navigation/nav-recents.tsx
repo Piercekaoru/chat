@@ -49,7 +49,8 @@ import { useStoredBoolean } from "@/shared/hooks/use-stored-boolean"
 import { cn } from "@/lib/utils"
 
 const RECENT_SKELETON_WIDTHS = ["74%", "61%", "69%", "57%", "72%"] as const
-const RECENTS_OPEN_STORAGE_KEY = "deeix.sidebar.recents.open"
+const RECENTS_OPEN_STORAGE_KEY = "openachieve:sidebar:recents:open"
+const LEGACY_RECENTS_OPEN_STORAGE_KEY = "deeix.sidebar.recents.open"
 
 export function NavRecents() {
   const t = useTranslations("recent")
@@ -83,7 +84,7 @@ export function NavRecents() {
   const [shareTarget, setShareTarget] = React.useState<{ publicID: string; title: string } | null>(null)
   const [renameValue, setRenameValue] = React.useState("")
   const [autoRenamingPublicID, setAutoRenamingPublicID] = React.useState<string | null>(null)
-  const [recentsOpen, setRecentsOpen] = useStoredBoolean(RECENTS_OPEN_STORAGE_KEY, true)
+  const [recentsOpen, setRecentsOpen] = useStoredBoolean(RECENTS_OPEN_STORAGE_KEY, true, LEGACY_RECENTS_OPEN_STORAGE_KEY)
   const loadMoreRef = React.useRef<HTMLLIElement | null>(null)
   const listContainerRef = React.useRef<HTMLDivElement | null>(null)
   const deleteFilesID = React.useId()

@@ -10,7 +10,7 @@ from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image, ImageOps
 
-app = FastAPI(title="DEEIX Chat Tesseract OCR Service")
+app = FastAPI(title="openachieve Tesseract OCR Service")
 
 render_scale = max(1.0, min(3.0, float(os.getenv("TESSERACT_RENDER_SCALE", "2.0"))))
 tesseract_lang = os.getenv("TESSERACT_LANG", "chi_sim+eng").strip() or "chi_sim+eng"

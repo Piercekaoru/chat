@@ -17,7 +17,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const runtimeActionTimeout = 5 * time.Minute
+const (
+	runtimeActionTimeout   = 5 * time.Minute
+	loginPageTitleFallback = "Sign in to openachieve"
+	loginDefaultNextPath   = "/chat"
+)
 
 type nativeToolCatalogProvider interface {
 	ListNativeToolDefinitions(ctx context.Context) ([]nativetool.Definition, error)
@@ -107,8 +111,8 @@ func (h *Handler) GetLoginPageSettings(c *gin.Context) {
 		return
 	}
 	values := map[string]string{
-		"login_page_title":        "Sign in to DEEIX Chat",
-		"login_default_next_path": "/chat",
+		"login_page_title":        loginPageTitleFallback,
+		"login_default_next_path": loginDefaultNextPath,
 	}
 	for _, item := range items {
 		if _, ok := values[item.Key]; ok {
@@ -116,12 +120,12 @@ func (h *Handler) GetLoginPageSettings(c *gin.Context) {
 		}
 	}
 	if strings.TrimSpace(values["login_page_title"]) == "" {
-		values["login_page_title"] = "Sign in to DEEIX Chat"
+		values["login_page_title"] = loginPageTitleFallback
 	}
 	if strings.TrimSpace(values["login_default_next_path"]) == "" ||
 		!strings.HasPrefix(values["login_default_next_path"], "/") ||
 		strings.HasPrefix(values["login_default_next_path"], "//") {
-		values["login_default_next_path"] = "/chat"
+		values["login_default_next_path"] = loginDefaultNextPath
 	}
 	response.Success(c, LoginPageSettingsResponse{
 		Title:           values["login_page_title"],

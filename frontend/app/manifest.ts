@@ -1,14 +1,15 @@
 import type { MetadataRoute } from "next";
 
+import { APP_BRAND_NAME, APP_BRAND_WORKSPACE_DESCRIPTION } from "@/shared/brand";
 import { pwaAsset } from "@/shared/pwa/assets";
 
 export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "DEEIX Chat",
-    short_name: "DEEIX",
-    description: "DEEIX Chat is a multi-model AI conversation workspace.",
+    name: APP_BRAND_NAME,
+    short_name: APP_BRAND_NAME,
+    description: APP_BRAND_WORKSPACE_DESCRIPTION,
     id: "/",
     start_url: "/chat",
     scope: "/",

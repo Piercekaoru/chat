@@ -7,6 +7,7 @@ import { Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SpinnerLabel } from "@/components/ui/spinner";
 import {
+  legacyProviderPKCEStorageKey,
   providerPKCEStorageKey,
   TWO_FACTOR_CHALLENGE_STORAGE_KEY,
   TWO_FACTOR_METHODS_STORAGE_KEY,
@@ -73,8 +74,12 @@ export function AuthCallbackPage() {
       setError(t("missingParams"));
       return;
     }
-    const codeVerifier = window.sessionStorage.getItem(providerPKCEStorageKey(provider)) ?? "";
+    const codeVerifier =
+      window.sessionStorage.getItem(providerPKCEStorageKey(provider)) ??
+      window.sessionStorage.getItem(legacyProviderPKCEStorageKey(provider)) ??
+      "";
     window.sessionStorage.removeItem(providerPKCEStorageKey(provider));
+    window.sessionStorage.removeItem(legacyProviderPKCEStorageKey(provider));
     if (!codeVerifier) {
       setError(t("expiredSession"));
       return;

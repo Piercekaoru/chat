@@ -2,34 +2,28 @@
 
 import * as React from "react"
 
-export function useStoredBoolean(storageKey: string, defaultValue: boolean) {
+import { readLocalStorageItem, writeLocalStorageItem } from "@/shared/lib/storage-key-migration"
+
+export function useStoredBoolean(storageKey: string, defaultValue: boolean, legacyStorageKey?: string) {
   const [value, setValue] = React.useState(() => {
     if (typeof window === "undefined") {
       return defaultValue
     }
 
-    try {
-      const stored = window.localStorage.getItem(storageKey)
-      if (stored === "true") {
-        return true
-      }
-      if (stored === "false") {
-        return false
-      }
-    } catch {
-      return defaultValue
+    const stored = readLocalStorageItem(storageKey, legacyStorageKey)
+    if (stored === "true") {
+      return true
+    }
+    if (stored === "false") {
+      return false
     }
 
     return defaultValue
   })
 
   React.useEffect(() => {
-    try {
-      window.localStorage.setItem(storageKey, value ? "true" : "false")
-    } catch {
-      // localStorage can be unavailable in private browsing or strict environments.
-    }
-  }, [storageKey, value])
+    writeLocalStorageItem(storageKey, value ? "true" : "false", legacyStorageKey)
+  }, [legacyStorageKey, storageKey, value])
 
   return [value, setValue] as const
 }

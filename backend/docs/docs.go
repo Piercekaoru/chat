@@ -75,13 +75,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/announcement.AdminAnnouncementListResponseDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AdminAnnouncementListResponseDoc"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     }
                 }
@@ -110,7 +110,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/announcement.CreateAnnouncementRequest"
+                            "$ref": "#/definitions/internal_transport_http_announcement.CreateAnnouncementRequest"
                         }
                     }
                 ],
@@ -118,19 +118,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementResponseDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     }
                 }
@@ -167,25 +167,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementDeleteResponseDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementDeleteResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     }
                 }
@@ -221,7 +221,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/announcement.PatchAnnouncementRequestDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.PatchAnnouncementRequestDoc"
                         }
                     }
                 ],
@@ -229,25 +229,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementResponseDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     }
                 }
@@ -1170,6 +1170,37 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/internal_transport_http_admin.ErrorDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_admin.ErrorDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/conversations/export": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "流式导出全量会话及消息为 NDJSON 文件，最后一行为 export_manifest 元数据",
+                "produces": [
+                    "application/x-ndjson"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "管理员导出全量对话数据",
+                "responses": {
+                    "200": {
+                        "description": "NDJSON stream",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -4901,13 +4932,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementListResponseDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementListResponseDoc"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     }
                 }
@@ -4945,7 +4976,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementStateRequest"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementStateRequest"
                         }
                     }
                 ],
@@ -4953,25 +4984,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementCloseResponseDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementCloseResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     }
                 }
@@ -5009,7 +5040,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementStateRequest"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementStateRequest"
                         }
                     }
                 ],
@@ -5017,25 +5048,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/announcement.AnnouncementDismissResponseDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementDismissResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/announcement.ErrorDoc"
+                            "$ref": "#/definitions/internal_transport_http_announcement.ErrorDoc"
                         }
                     }
                 }
@@ -9545,282 +9576,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "announcement.AdminAnnouncementListResponseDoc": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "object",
-                    "properties": {
-                        "results": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/announcement.AnnouncementResponse"
-                            }
-                        },
-                        "total": {
-                            "type": "integer"
-                        }
-                    }
-                },
-                "errorMsg": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.AnnouncementCloseDataResponse": {
-            "type": "object",
-            "properties": {
-                "closed": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "announcement.AnnouncementCloseResponseDoc": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/announcement.AnnouncementCloseDataResponse"
-                },
-                "errorMsg": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.AnnouncementDataResponse": {
-            "type": "object",
-            "properties": {
-                "announcement": {
-                    "$ref": "#/definitions/announcement.AnnouncementResponse"
-                }
-            }
-        },
-        "announcement.AnnouncementDeleteDataResponse": {
-            "type": "object",
-            "properties": {
-                "deleted": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "announcement.AnnouncementDeleteResponseDoc": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/announcement.AnnouncementDeleteDataResponse"
-                },
-                "errorMsg": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.AnnouncementDismissDataResponse": {
-            "type": "object",
-            "properties": {
-                "dismissed": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "announcement.AnnouncementDismissResponseDoc": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/announcement.AnnouncementDismissDataResponse"
-                },
-                "errorMsg": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.AnnouncementListResponseDoc": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/announcement.AnnouncementResponse"
-                    }
-                },
-                "errorMsg": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.AnnouncementResponse": {
-            "type": "object",
-            "properties": {
-                "closedAt": {
-                    "type": "string"
-                },
-                "contentMarkdown": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "createdByUserID": {
-                    "type": "integer"
-                },
-                "expiresAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "pinned": {
-                    "type": "boolean"
-                },
-                "priority": {
-                    "type": "integer"
-                },
-                "startsAt": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.AnnouncementResponseDoc": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "$ref": "#/definitions/announcement.AnnouncementDataResponse"
-                },
-                "errorMsg": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.AnnouncementStateRequest": {
-            "type": "object",
-            "required": [
-                "updatedAt"
-            ],
-            "properties": {
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "announcement.CreateAnnouncementRequest": {
-            "type": "object",
-            "required": [
-                "contentMarkdown",
-                "title"
-            ],
-            "properties": {
-                "contentMarkdown": {
-                    "type": "string",
-                    "maxLength": 20000,
-                    "minLength": 1
-                },
-                "expiresAt": {
-                    "type": "string"
-                },
-                "pinned": {
-                    "type": "boolean"
-                },
-                "priority": {
-                    "type": "integer"
-                },
-                "startsAt": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "active",
-                        "inactive"
-                    ]
-                },
-                "title": {
-                    "type": "string",
-                    "maxLength": 120,
-                    "minLength": 1
-                },
-                "type": {
-                    "type": "string",
-                    "enum": [
-                        "critical",
-                        "warning",
-                        "info",
-                        "normal",
-                        "general"
-                    ]
-                }
-            }
-        },
-        "announcement.ErrorDoc": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "details": {},
-                "errorCode": {
-                    "type": "string",
-                    "example": "invalid_request"
-                },
-                "errorMsg": {
-                    "type": "string",
-                    "example": "invalid request"
-                },
-                "requestId": {
-                    "type": "string",
-                    "example": ""
-                }
-            }
-        },
-        "announcement.PatchAnnouncementRequestDoc": {
-            "type": "object",
-            "properties": {
-                "contentMarkdown": {
-                    "type": "string",
-                    "maxLength": 20000
-                },
-                "expiresAt": {
-                    "type": "string"
-                },
-                "pinned": {
-                    "type": "boolean"
-                },
-                "priority": {
-                    "type": "integer"
-                },
-                "startsAt": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "active",
-                        "inactive"
-                    ]
-                },
-                "title": {
-                    "type": "string",
-                    "maxLength": 120
-                },
-                "type": {
-                    "type": "string",
-                    "enum": [
-                        "critical",
-                        "warning",
-                        "info",
-                        "normal",
-                        "general"
-                    ]
-                }
-            }
-        },
         "github_com_DEEIX-AI_DEEIX-Chat_backend_internal_shared_response.Envelope": {
             "type": "object",
             "properties": {
@@ -10872,6 +10627,282 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AdminAnnouncementListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "results": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementResponse"
+                            }
+                        },
+                        "total": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementCloseDataResponse": {
+            "type": "object",
+            "properties": {
+                "closed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementCloseResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementCloseDataResponse"
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementDataResponse": {
+            "type": "object",
+            "properties": {
+                "announcement": {
+                    "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementResponse"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementDeleteDataResponse": {
+            "type": "object",
+            "properties": {
+                "deleted": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementDeleteResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementDeleteDataResponse"
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementDismissDataResponse": {
+            "type": "object",
+            "properties": {
+                "dismissed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementDismissResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementDismissDataResponse"
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementResponse"
+                    }
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementResponse": {
+            "type": "object",
+            "properties": {
+                "closedAt": {
+                    "type": "string"
+                },
+                "contentMarkdown": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdByUserID": {
+                    "type": "integer"
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "pinned": {
+                    "type": "boolean"
+                },
+                "priority": {
+                    "type": "integer"
+                },
+                "startsAt": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_transport_http_announcement.AnnouncementDataResponse"
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.AnnouncementStateRequest": {
+            "type": "object",
+            "required": [
+                "updatedAt"
+            ],
+            "properties": {
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_announcement.CreateAnnouncementRequest": {
+            "type": "object",
+            "required": [
+                "contentMarkdown",
+                "title"
+            ],
+            "properties": {
+                "contentMarkdown": {
+                    "type": "string",
+                    "maxLength": 20000,
+                    "minLength": 1
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "pinned": {
+                    "type": "boolean"
+                },
+                "priority": {
+                    "type": "integer"
+                },
+                "startsAt": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "active",
+                        "inactive"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 120,
+                    "minLength": 1
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "critical",
+                        "warning",
+                        "info",
+                        "normal",
+                        "general"
+                    ]
+                }
+            }
+        },
+        "internal_transport_http_announcement.ErrorDoc": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "details": {},
+                "errorCode": {
+                    "type": "string",
+                    "example": "invalid_request"
+                },
+                "errorMsg": {
+                    "type": "string",
+                    "example": "invalid request"
+                },
+                "requestId": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
+        "internal_transport_http_announcement.PatchAnnouncementRequestDoc": {
+            "type": "object",
+            "properties": {
+                "contentMarkdown": {
+                    "type": "string",
+                    "maxLength": 20000
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "pinned": {
+                    "type": "boolean"
+                },
+                "priority": {
+                    "type": "integer"
+                },
+                "startsAt": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "active",
+                        "inactive"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 120
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "critical",
+                        "warning",
+                        "info",
+                        "normal",
+                        "general"
+                    ]
                 }
             }
         },
@@ -16889,7 +16920,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.2.8",
+	Version:          "0.3.0",
 	Host:             "",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},

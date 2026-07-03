@@ -1,7 +1,10 @@
 package admin
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,20 +16,42 @@ import (
 	applogcleanup "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/application/logcleanup"
 	systemeventapp "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/application/systemevent"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/application/user"
+	domainconversation "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/domain/conversation"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/repository"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/shared/response"
+	conversationhttp "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/transport/http/conversation"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/transport/http/middleware"
 	"github.com/gin-gonic/gin"
 )
 
+type conversationExporter interface {
+	ExportConversationData(ctx context.Context, conversation *domainconversation.Conversation) (*appconversation.ConversationExportResult, error)
+	ListAllConversationsAfterID(ctx context.Context, afterID uint, limit int) ([]domainconversation.Conversation, error)
+}
+
+type conversationExportManifest struct {
+	Type      string `json:"_type"`
+	Complete  bool   `json:"complete"`
+	Exported  int64  `json:"exported"`
+	Failed    int    `json:"failed"`
+	FailedIDs []uint `json:"failedIDs,omitempty"`
+	Error     string `json:"error,omitempty"`
+}
+
 // Handler 封装后台管理 HTTP 处理。
 type Handler struct {
-	service *appadmin.Service
+	service            *appadmin.Service
+	conversationExport conversationExporter
 }
 
 // NewHandler 创建处理器。
 func NewHandler(service *appadmin.Service) *Handler {
 	return &Handler{service: service}
+}
+
+// SetConversationExporter 注入会话导出能力。
+func (h *Handler) SetConversationExporter(exporter conversationExporter) {
+	h.conversationExport = exporter
 }
 
 // ListUsers godoc
@@ -986,6 +1011,87 @@ func (h *Handler) ListUserAuthEvents(c *gin.Context) {
 		events = append(events, toAuthEventResponse(e, userLabels[e.UserID]))
 	}
 	response.SuccessPage(c, total, events)
+}
+
+// ExportConversations godoc
+// @Summary 管理员导出全量对话数据
+// @Description 流式导出全量会话及消息为 NDJSON 文件，最后一行为 export_manifest 元数据
+// @Tags admin
+// @Produce application/x-ndjson
+// @Security BearerAuth
+// @Success 200 {string} string "NDJSON stream"
+// @Failure 500 {object} ErrorDoc
+// @Router /admin/conversations/export [get]
+// ExportConversations 流式导出全量对话。
+func (h *Handler) ExportConversations(c *gin.Context) {
+	if h.conversationExport == nil {
+		response.Error(c, http.StatusInternalServerError, "export not available")
+		return
+	}
+
+	actorUserID := middleware.MustUserID(c)
+	h.service.WriteAuditLog(c.Request.Context(), middleware.MustRequestID(c), actorUserID, "admin_export_conversations", "conversation", "", c.ClientIP(), c.Request.UserAgent(), nil)
+
+	c.Header("Content-Type", "application/x-ndjson")
+	c.Header("Content-Disposition", fmt.Sprintf(`attachment; filename="conversations-export-%s.jsonl"`, time.Now().UTC().Format("20060102-150405")))
+	c.Header("Cache-Control", "no-store")
+	c.Status(http.StatusOK)
+
+	const batchSize = 50
+	var lastID uint
+	encoder := json.NewEncoder(c.Writer)
+	exported := int64(0)
+	var failedIDs []uint
+	writeManifest := func(complete bool, exportErr string) bool {
+		manifest := conversationExportManifest{
+			Type:      "export_manifest",
+			Complete:  complete,
+			Exported:  exported,
+			Failed:    len(failedIDs),
+			FailedIDs: failedIDs,
+			Error:     exportErr,
+		}
+		if err := encoder.Encode(manifest); err != nil {
+			return false
+		}
+		c.Writer.Flush()
+		return true
+	}
+
+	for {
+		if c.Request.Context().Err() != nil {
+			return
+		}
+		conversations, err := h.conversationExport.ListAllConversationsAfterID(c.Request.Context(), lastID, batchSize)
+		if err != nil {
+			writeManifest(false, "failed to list conversations")
+			return
+		}
+		if len(conversations) == 0 {
+			break
+		}
+
+		for i := range conversations {
+			result, err := h.conversationExport.ExportConversationData(c.Request.Context(), &conversations[i])
+			if err != nil {
+				failedIDs = append(failedIDs, conversations[i].ID)
+				continue
+			}
+			if err := encoder.Encode(conversationhttp.ToConversationExportResponse(result)); err != nil {
+				return
+			}
+			exported++
+		}
+
+		c.Writer.Flush()
+		lastID = conversations[len(conversations)-1].ID
+
+		if len(conversations) < batchSize {
+			break
+		}
+	}
+
+	writeManifest(true, "")
 }
 
 func pageParams(c *gin.Context) (int, int) {

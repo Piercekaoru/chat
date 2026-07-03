@@ -1,191 +1,5 @@
 basePath: /api/v1
 definitions:
-  announcement.AdminAnnouncementListResponseDoc:
-    properties:
-      data:
-        properties:
-          results:
-            items:
-              $ref: '#/definitions/announcement.AnnouncementResponse'
-            type: array
-          total:
-            type: integer
-        type: object
-      errorMsg:
-        type: string
-    type: object
-  announcement.AnnouncementCloseDataResponse:
-    properties:
-      closed:
-        type: boolean
-    type: object
-  announcement.AnnouncementCloseResponseDoc:
-    properties:
-      data:
-        $ref: '#/definitions/announcement.AnnouncementCloseDataResponse'
-      errorMsg:
-        type: string
-    type: object
-  announcement.AnnouncementDataResponse:
-    properties:
-      announcement:
-        $ref: '#/definitions/announcement.AnnouncementResponse'
-    type: object
-  announcement.AnnouncementDeleteDataResponse:
-    properties:
-      deleted:
-        type: boolean
-    type: object
-  announcement.AnnouncementDeleteResponseDoc:
-    properties:
-      data:
-        $ref: '#/definitions/announcement.AnnouncementDeleteDataResponse'
-      errorMsg:
-        type: string
-    type: object
-  announcement.AnnouncementDismissDataResponse:
-    properties:
-      dismissed:
-        type: boolean
-    type: object
-  announcement.AnnouncementDismissResponseDoc:
-    properties:
-      data:
-        $ref: '#/definitions/announcement.AnnouncementDismissDataResponse'
-      errorMsg:
-        type: string
-    type: object
-  announcement.AnnouncementListResponseDoc:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/announcement.AnnouncementResponse'
-        type: array
-      errorMsg:
-        type: string
-    type: object
-  announcement.AnnouncementResponse:
-    properties:
-      closedAt:
-        type: string
-      contentMarkdown:
-        type: string
-      createdAt:
-        type: string
-      createdByUserID:
-        type: integer
-      expiresAt:
-        type: string
-      id:
-        type: integer
-      pinned:
-        type: boolean
-      priority:
-        type: integer
-      startsAt:
-        type: string
-      status:
-        type: string
-      title:
-        type: string
-      type:
-        type: string
-      updatedAt:
-        type: string
-    type: object
-  announcement.AnnouncementResponseDoc:
-    properties:
-      data:
-        $ref: '#/definitions/announcement.AnnouncementDataResponse'
-      errorMsg:
-        type: string
-    type: object
-  announcement.AnnouncementStateRequest:
-    properties:
-      updatedAt:
-        type: string
-    required:
-    - updatedAt
-    type: object
-  announcement.CreateAnnouncementRequest:
-    properties:
-      contentMarkdown:
-        maxLength: 20000
-        minLength: 1
-        type: string
-      expiresAt:
-        type: string
-      pinned:
-        type: boolean
-      priority:
-        type: integer
-      startsAt:
-        type: string
-      status:
-        enum:
-        - active
-        - inactive
-        type: string
-      title:
-        maxLength: 120
-        minLength: 1
-        type: string
-      type:
-        enum:
-        - critical
-        - warning
-        - info
-        - normal
-        - general
-        type: string
-    required:
-    - contentMarkdown
-    - title
-    type: object
-  announcement.ErrorDoc:
-    properties:
-      data: {}
-      details: {}
-      errorCode:
-        example: invalid_request
-        type: string
-      errorMsg:
-        example: invalid request
-        type: string
-      requestId:
-        example: ""
-        type: string
-    type: object
-  announcement.PatchAnnouncementRequestDoc:
-    properties:
-      contentMarkdown:
-        maxLength: 20000
-        type: string
-      expiresAt:
-        type: string
-      pinned:
-        type: boolean
-      priority:
-        type: integer
-      startsAt:
-        type: string
-      status:
-        enum:
-        - active
-        - inactive
-        type: string
-      title:
-        maxLength: 120
-        type: string
-      type:
-        enum:
-        - critical
-        - warning
-        - info
-        - normal
-        - general
-        type: string
-    type: object
   github_com_DEEIX-AI_DEEIX-Chat_backend_internal_shared_response.Envelope:
     properties:
       data: {}
@@ -886,6 +700,192 @@ definitions:
       updatedAt:
         type: string
       username:
+        type: string
+    type: object
+  internal_transport_http_announcement.AdminAnnouncementListResponseDoc:
+    properties:
+      data:
+        properties:
+          results:
+            items:
+              $ref: '#/definitions/internal_transport_http_announcement.AnnouncementResponse'
+            type: array
+          total:
+            type: integer
+        type: object
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_announcement.AnnouncementCloseDataResponse:
+    properties:
+      closed:
+        type: boolean
+    type: object
+  internal_transport_http_announcement.AnnouncementCloseResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/internal_transport_http_announcement.AnnouncementCloseDataResponse'
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_announcement.AnnouncementDataResponse:
+    properties:
+      announcement:
+        $ref: '#/definitions/internal_transport_http_announcement.AnnouncementResponse'
+    type: object
+  internal_transport_http_announcement.AnnouncementDeleteDataResponse:
+    properties:
+      deleted:
+        type: boolean
+    type: object
+  internal_transport_http_announcement.AnnouncementDeleteResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/internal_transport_http_announcement.AnnouncementDeleteDataResponse'
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_announcement.AnnouncementDismissDataResponse:
+    properties:
+      dismissed:
+        type: boolean
+    type: object
+  internal_transport_http_announcement.AnnouncementDismissResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/internal_transport_http_announcement.AnnouncementDismissDataResponse'
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_announcement.AnnouncementListResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/internal_transport_http_announcement.AnnouncementResponse'
+        type: array
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_announcement.AnnouncementResponse:
+    properties:
+      closedAt:
+        type: string
+      contentMarkdown:
+        type: string
+      createdAt:
+        type: string
+      createdByUserID:
+        type: integer
+      expiresAt:
+        type: string
+      id:
+        type: integer
+      pinned:
+        type: boolean
+      priority:
+        type: integer
+      startsAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  internal_transport_http_announcement.AnnouncementResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/internal_transport_http_announcement.AnnouncementDataResponse'
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_announcement.AnnouncementStateRequest:
+    properties:
+      updatedAt:
+        type: string
+    required:
+    - updatedAt
+    type: object
+  internal_transport_http_announcement.CreateAnnouncementRequest:
+    properties:
+      contentMarkdown:
+        maxLength: 20000
+        minLength: 1
+        type: string
+      expiresAt:
+        type: string
+      pinned:
+        type: boolean
+      priority:
+        type: integer
+      startsAt:
+        type: string
+      status:
+        enum:
+        - active
+        - inactive
+        type: string
+      title:
+        maxLength: 120
+        minLength: 1
+        type: string
+      type:
+        enum:
+        - critical
+        - warning
+        - info
+        - normal
+        - general
+        type: string
+    required:
+    - contentMarkdown
+    - title
+    type: object
+  internal_transport_http_announcement.ErrorDoc:
+    properties:
+      data: {}
+      details: {}
+      errorCode:
+        example: invalid_request
+        type: string
+      errorMsg:
+        example: invalid request
+        type: string
+      requestId:
+        example: ""
+        type: string
+    type: object
+  internal_transport_http_announcement.PatchAnnouncementRequestDoc:
+    properties:
+      contentMarkdown:
+        maxLength: 20000
+        type: string
+      expiresAt:
+        type: string
+      pinned:
+        type: boolean
+      priority:
+        type: integer
+      startsAt:
+        type: string
+      status:
+        enum:
+        - active
+        - inactive
+        type: string
+      title:
+        maxLength: 120
+        type: string
+      type:
+        enum:
+        - critical
+        - warning
+        - info
+        - normal
+        - general
         type: string
     type: object
   internal_transport_http_auth.ActiveSessionListResponse:
@@ -4895,7 +4895,7 @@ info:
   contact: {}
   description: openachieve backend API documentation
   title: openachieve API
-  version: 0.2.8
+  version: "0.3.0"
 paths:
   /admin/announcements:
     get:
@@ -4933,11 +4933,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/announcement.AdminAnnouncementListResponseDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.AdminAnnouncementListResponseDoc'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
       security:
       - BearerAuth: []
       summary: 管理员查询公告
@@ -4953,22 +4953,22 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/announcement.CreateAnnouncementRequest'
+          $ref: '#/definitions/internal_transport_http_announcement.CreateAnnouncementRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/announcement.AnnouncementResponseDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.AnnouncementResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
       security:
       - BearerAuth: []
       summary: 管理员创建公告
@@ -4991,19 +4991,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/announcement.AnnouncementDeleteResponseDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.AnnouncementDeleteResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
       security:
       - BearerAuth: []
       summary: 管理员删除公告
@@ -5024,26 +5024,26 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/announcement.PatchAnnouncementRequestDoc'
+          $ref: '#/definitions/internal_transport_http_announcement.PatchAnnouncementRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/announcement.AnnouncementResponseDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.AnnouncementResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
       security:
       - BearerAuth: []
       summary: 管理员更新公告
@@ -5639,6 +5639,25 @@ paths:
       security:
       - BearerAuth: []
       summary: 管理员查询对话事件
+      tags:
+      - admin
+  /admin/conversations/export:
+    get:
+      description: 流式导出全量会话及消息为 NDJSON 文件，最后一行为 export_manifest 元数据
+      produces:
+      - application/x-ndjson
+      responses:
+        "200":
+          description: NDJSON stream
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_transport_http_admin.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员导出全量对话数据
       tags:
       - admin
   /admin/llm/models:
@@ -7994,11 +8013,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/announcement.AnnouncementListResponseDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.AnnouncementListResponseDoc'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
       security:
       - BearerAuth: []
       summary: 获取当前公告
@@ -8020,26 +8039,26 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/announcement.AnnouncementStateRequest'
+          $ref: '#/definitions/internal_transport_http_announcement.AnnouncementStateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/announcement.AnnouncementCloseResponseDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.AnnouncementCloseResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
       security:
       - BearerAuth: []
       summary: 关闭公告
@@ -8061,26 +8080,26 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/announcement.AnnouncementStateRequest'
+          $ref: '#/definitions/internal_transport_http_announcement.AnnouncementStateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/announcement.AnnouncementDismissResponseDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.AnnouncementDismissResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/announcement.ErrorDoc'
+            $ref: '#/definitions/internal_transport_http_announcement.ErrorDoc'
       security:
       - BearerAuth: []
       summary: 今日不再显示公告

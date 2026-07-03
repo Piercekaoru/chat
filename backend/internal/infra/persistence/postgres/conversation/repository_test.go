@@ -180,7 +180,7 @@ func TestUpdateConversationMetadataSQLiteUsesPortableTrim(t *testing.T) {
 	conversation := model.Conversation{
 		UserID:     1,
 		PublicID:   "conv_metadata_sqlite",
-		Title:      " 新会话 ",
+		Title:      " 新对话 ",
 		LabelsJSON: "[]",
 		SessionKey: "session_metadata_sqlite",
 		Status:     "active",

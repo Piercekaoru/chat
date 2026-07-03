@@ -9,7 +9,7 @@ import (
 )
 
 // @title openachieve API
-// @version 0.2.8
+// @version 0.3.0
 // @description openachieve backend API documentation
 // @BasePath /api/v1
 // @securityDefinitions.apikey BearerAuth

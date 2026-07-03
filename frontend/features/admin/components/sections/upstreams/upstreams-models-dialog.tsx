@@ -760,6 +760,11 @@ function NewBindingDialog({
   const [form, setForm] = React.useState<NewBindingFormState>(DEFAULT_NEW_BINDING);
   const [saving, setSaving] = React.useState(false);
 
+  React.useEffect(() => {
+    if (!open) return;
+    setForm(DEFAULT_NEW_BINDING);
+  }, [open]);
+
   function setField<K extends keyof NewBindingFormState>(
     key: K,
     value: NewBindingFormState[K],
@@ -945,7 +950,7 @@ export function UpstreamModelsDialog({
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [newBindingOpen, setNewBindingOpen] = React.useState(false);
   const [bulkRouteStatus, setBulkRouteStatus] = React.useState<"active" | "inactive">("active");
-  const [bulkProtocols, setBulkProtocols] = React.useState<AdminLLMAdapter[]>(["openai_responses"]);
+  const [bulkProtocols, setBulkProtocols] = React.useState<AdminLLMAdapter[]>([]);
   const [bulkKindsDisplay, setBulkKindsDisplay] = React.useState("chat");
   const [bulkPatchConfirm, setBulkPatchConfirm] = React.useState<BulkPatchConfirm | null>(null);
   const [query, setQuery] = React.useState("");
@@ -957,6 +962,10 @@ export function UpstreamModelsDialog({
   const [probeResults, setProbeResults] = React.useState<AdminLLMModelProbeResult[]>([]);
   const requestSeqRef = React.useRef(0);
   const upstreamID = upstream?.id ?? null;
+
+  React.useEffect(() => {
+    setBulkProtocols([]);
+  }, [upstreamID]);
 
   const loadBindings = React.useCallback(async (params: RouteListParams = listParams) => {
     if (!upstreamID || params.upstreamID !== upstreamID) return;

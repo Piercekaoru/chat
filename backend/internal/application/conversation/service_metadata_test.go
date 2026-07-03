@@ -139,12 +139,12 @@ func TestConversationMetadataRefreshHint(t *testing.T) {
 		},
 		{
 			name:         "skip when no titleable text",
-			conversation: model.Conversation{Title: "新会话", LabelsJSON: "[]"},
+			conversation: model.Conversation{Title: "新对话", LabelsJSON: "[]"},
 			want:         conversationMetadataRefreshNoContent,
 		},
 		{
 			name:         "pending when metadata needed and text exists",
-			conversation: model.Conversation{Title: "新会话", LabelsJSON: "[]"},
+			conversation: model.Conversation{Title: "新对话", LabelsJSON: "[]"},
 			userMsg:      model.Message{Content: "帮我整理本周项目计划"},
 			want:         conversationMetadataRefreshPending,
 		},
@@ -212,11 +212,11 @@ func TestConversationTitleFromMessagesPrefersLatestUserMessage(t *testing.T) {
 
 func TestConversationMetadataFallsBackToFirstUserMessageTitle(t *testing.T) {
 	resolvedTitle := resolveConversationMetadataTitle(
-		shouldAutoReplaceConversationTitle("新会话"),
+		shouldAutoReplaceConversationTitle("新对话"),
 		"",
 		"设置为跟随后，Grok 4.3 对话标题没有自动生成",
 	)
-	if resolvedTitle == "" || resolvedTitle == "新会话" {
+	if resolvedTitle == "" || resolvedTitle == "新对话" {
 		t.Fatalf("expected first user message fallback title, got %q", resolvedTitle)
 	}
 }
@@ -225,8 +225,14 @@ func TestShouldAutoReplaceConversationTitleIncludesEnglishNewChat(t *testing.T) 
 	if !shouldAutoReplaceConversationTitle("New chat") {
 		t.Fatal("expected English localized new chat title to be replaceable")
 	}
-	if shouldAutoReplaceConversationTitle("新对话") {
-		t.Fatal("expected non-persisted Chinese navigation label not to be replaceable")
+	if !shouldAutoReplaceConversationTitle("新对话") {
+		t.Fatal("expected Chinese localized new chat title to be replaceable")
+	}
+	if shouldAutoReplaceConversationTitle("新会话") {
+		t.Fatal("expected legacy Chinese title not to be replaceable")
+	}
+	if shouldAutoReplaceConversationTitle("") {
+		t.Fatal("expected empty title not to be treated as a localized placeholder")
 	}
 }
 
@@ -247,7 +253,7 @@ func TestConversationMetadataErrorDoesNotLeakWhenEitherTaskSucceeds(t *testing.T
 
 func TestShouldGenerateConversationMetadataAfterFailedFirstTurn(t *testing.T) {
 	conversation := model.Conversation{
-		Title:        "新会话",
+		Title:        "新对话",
 		LabelsJSON:   "[]",
 		MessageCount: 2,
 	}

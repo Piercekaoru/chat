@@ -1,11 +1,11 @@
 const PWA_ASSET_VERSION = "0.3.0";
-const PWA_ASSET_CACHE_KEY = "049820fe1353";
+const PWA_ASSET_CACHE_KEY = "836d03495358";
 const PWA_ASSET_MANIFEST = {
-  "/pwa/icon.svg": "/pwa/generated/icon.b78069f96eed.svg",
-  "/pwa/icon-192.png": "/pwa/generated/icon-192.1b240053ac28.png",
-  "/pwa/icon-512.png": "/pwa/generated/icon-512.9a619dedb644.png",
-  "/pwa/icon-maskable-512.png": "/pwa/generated/icon-maskable-512.58e0ee4d013c.png",
-  "/pwa/apple-touch-icon.png": "/pwa/generated/apple-touch-icon.85d327355031.png"
+  "/pwa/icon.svg": "/pwa/generated/icon.dc89a0862a71.svg",
+  "/pwa/icon-192.png": "/pwa/generated/icon-192.fda3d6580896.png",
+  "/pwa/icon-512.png": "/pwa/generated/icon-512.1116f0d8f8a7.png",
+  "/pwa/icon-maskable-512.png": "/pwa/generated/icon-maskable-512.b05317fef564.png",
+  "/pwa/apple-touch-icon.png": "/pwa/generated/apple-touch-icon.cd2cc6fd63a1.png"
 };
 const STATIC_CACHE = `openachieve-static-${PWA_ASSET_VERSION}-${PWA_ASSET_CACHE_KEY}`;
 const PAGE_CACHE = `openachieve-pages-${PWA_ASSET_VERSION}`;

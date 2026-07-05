@@ -43,6 +43,7 @@ export function NavMainItem({
   isMobile,
   onCreateConversation,
   onOpenSearch,
+  onOpenDonate,
   onCloseMobileSidebar,
 }: {
   item: NavigationItem
@@ -51,6 +52,7 @@ export function NavMainItem({
   isMobile: boolean
   onCreateConversation: () => void
   onOpenSearch: () => void
+  onOpenDonate: () => void
   onCloseMobileSidebar: () => void
 }) {
   const Icon = item.icon
@@ -88,6 +90,12 @@ export function NavMainItem({
               if (item.id === "search") {
                 event.preventDefault()
                 onOpenSearch()
+                return
+              }
+
+              if (item.id === "donate") {
+                event.preventDefault()
+                onOpenDonate()
                 return
               }
 

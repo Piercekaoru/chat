@@ -11,6 +11,7 @@ import {
 import { NAVIGATION_ITEMS } from "@/features/layouts/model/navigation-items"
 import { NavigationSearch } from "@/features/layouts/components/navigation/navigation-search"
 import { NavMainItem } from "@/features/layouts/components/navigation/nav-main-item"
+import { NavDonateDialog } from "@/features/layouts/components/navigation/nav-donate-dialog"
 import { useSidebarRecents } from "@/features/recent/context/sidebar-recents-context"
 
 const MAX_SEARCH_RESULTS = 8
@@ -20,6 +21,9 @@ export function NavMain({ onCreateConversation }: { onCreateConversation: () => 
   const { state, isMobile, setOpenMobile } = useSidebar()
   const { items } = useSidebarRecents()
   const isCollapsed = !isMobile && state === "collapsed"
+
+  const [donateOpen, setDonateOpen] = React.useState(false)
+  const openDonate = React.useCallback(() => setDonateOpen(true), [])
 
   const search = useLayoutNavigationSearch({
     items,
@@ -58,6 +62,7 @@ export function NavMain({ onCreateConversation }: { onCreateConversation: () => 
               isMobile={isMobile}
               onCreateConversation={onCreateConversation}
               onOpenSearch={search.openSearch}
+              onOpenDonate={openDonate}
               onCloseMobileSidebar={onCloseMobileSidebar}
             />
           ))}
@@ -73,6 +78,7 @@ export function NavMain({ onCreateConversation }: { onCreateConversation: () => 
               isMobile={isMobile}
               onCreateConversation={onCreateConversation}
               onOpenSearch={search.openSearch}
+              onOpenDonate={openDonate}
               onCloseMobileSidebar={onCloseMobileSidebar}
             />
           ))}
@@ -93,6 +99,8 @@ export function NavMain({ onCreateConversation }: { onCreateConversation: () => 
         emptyText={t("searchEmpty")}
         onSelect={search.selectResult}
       />
+
+      <NavDonateDialog open={donateOpen} onOpenChange={setDonateOpen} />
     </>
   )
 }

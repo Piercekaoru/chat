@@ -3,6 +3,7 @@ import { MessageCircleMore } from "@/components/animate-ui/icons/message-circle-
 import { PlusIcon } from "@/components/ui/plus"
 import { Search } from "@/components/animate-ui/icons/search"
 import { Blend } from "@/components/animate-ui/icons/blend"
+import { Heart } from "@/components/animate-ui/icons/heart"
 import type { NavigationItem } from "@/features/layouts/types/navigation"
 
 export const NAVIGATION_ITEMS = [
@@ -35,6 +36,13 @@ export const NAVIGATION_ITEMS = [
     title: "Files",
     url: "/files",
     icon: Layers,
+    group: "secondary",
+  },
+  {
+    id: "donate",
+    title: "Buy me a coffee",
+    url: "#",
+    icon: Heart,
     group: "secondary",
   },
   {

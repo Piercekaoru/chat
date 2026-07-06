@@ -20,6 +20,7 @@ import { useChatViewerProfile } from "@/features/chat/hooks/use-chat-viewer-prof
 import { useChatConversationExport } from "@/features/chat/hooks/use-chat-conversation-export";
 import { useChatScreenshot } from "@/features/chat/hooks/use-chat-screenshot";
 import { useChatVisualPrompt } from "@/features/chat/hooks/use-chat-visual-prompt";
+import { useChatWebSearch } from "@/features/chat/hooks/use-chat-web-search";
 import { ChatInput } from "@/features/chat/components/sections/chat-input";
 import { ChatScreenshotPreviewDialog } from "@/features/chat/components/sections/chat-screenshot-preview-dialog";
 import { resolveChatContentWidthClassName } from "@/shared/model/chat-content-width";
@@ -330,6 +331,7 @@ export function AppChatArea() {
     billingDisplayUsdToCnyRate,
     modelOptionPolicy,
     mcpMaxSelectedTools,
+    webSearchAvailable,
     selectedPlatformModelName,
     setSelectedPlatformModelName,
   } = useChatModelOptions({
@@ -373,6 +375,7 @@ export function AppChatArea() {
   const [defaultToolIDs, setDefaultToolIDs] = React.useState<number[]>([]);
   const defaultToolIDsRef = React.useRef<number[]>([]);
   const htmlVisualPrompt = useChatVisualPrompt();
+  const webSearch = useChatWebSearch();
   const { resolvedTheme } = useTheme();
   const initializedOptionsModelRef = React.useRef("");
   const selectedModelDefaultOptionsRef = React.useRef<ConversationOptions>({});
@@ -583,6 +586,7 @@ export function AppChatArea() {
     modelOptions,
     selectedToolIDs,
     selectedSkills,
+    webSearchEnabled: webSearchAvailable && webSearch.enabled,
     htmlVisualPromptEnabled: htmlVisualPrompt.enabled,
     htmlVisualColorMode: resolvedTheme,
     options: modelOptionPolicyDisabled ? EMPTY_CONVERSATION_OPTIONS : options,
@@ -1087,6 +1091,8 @@ export function AppChatArea() {
     selectedSkills,
     defaultToolIDs,
     queuedMessages,
+    webSearchAvailable,
+    webSearchEnabled: webSearch.enabled,
     htmlVisualPromptEnabled: htmlVisualPrompt.enabled,
     maxSelectedTools: mcpMaxSelectedTools,
     toolsLoading,
@@ -1102,6 +1108,7 @@ export function AppChatArea() {
     maxSelectedSkills: mcpMaxSelectedTools,
     onSelectedSkillsChange: setSelectedSkills,
     onDefaultToolsChange: onDefaultToolIDsChange,
+    onWebSearchChange: webSearch.setEnabled,
     onHTMLVisualPromptChange: htmlVisualPrompt.setEnabled,
     onOptionsChange: setModelOptions,
     onOptionsReset: resetModelOptions,

@@ -685,6 +685,9 @@ func (s *Service) sendMessageInternal(
 		)
 	}
 	toolRuntime := s.resolveSelectedToolRuntime(ctx, input.SelectedToolIDs)
+	if input.WebSearchEnabled {
+		s.appendWebSearchRuntime(&toolRuntime, cfg)
+	}
 	promptPlan := buildPromptPlan(ctx, promptPlanInput{
 		BaseMessages:      llmMessages,
 		StableAttachments: stableFullContextAttachments,
@@ -1056,18 +1059,19 @@ func (s *Service) sendMessageInternal(
 			),
 		)
 		toolResult := s.executeAssistantToolCalls(toolCtx, executeAssistantToolCallsInput{
-			UserID:         input.UserID,
-			ConversationID: input.ConversationID,
-			MessageID:      assistantMessage.ID,
-			RequestID:      input.RequestID,
-			RunID:          runID,
-			ToolCalls:      upstreamOutput.ToolCalls,
-			ToolCallLimit:  remainingToolCalls,
-			TraceRecorder:  traceRecorder,
-			ToolNameMap:    toolRuntime.nameMap,
-			MCPConfigs:     toolRuntime.mcpConfigs,
-			ToolSchemas:    toolRuntime.schemas,
-			Ledger:         toolLedger,
+			UserID:          input.UserID,
+			ConversationID:  input.ConversationID,
+			MessageID:       assistantMessage.ID,
+			RequestID:       input.RequestID,
+			RunID:           runID,
+			ToolCalls:       upstreamOutput.ToolCalls,
+			ToolCallLimit:   remainingToolCalls,
+			TraceRecorder:   traceRecorder,
+			ToolNameMap:     toolRuntime.nameMap,
+			MCPConfigs:      toolRuntime.mcpConfigs,
+			ToolSchemas:     toolRuntime.schemas,
+			BuiltinHandlers: toolRuntime.builtinHandlers,
+			Ledger:          toolLedger,
 		})
 		toolSpan.SetAttributes(
 			attribute.Int("conversation.tool.executed_count", len(toolResult.Rows)),

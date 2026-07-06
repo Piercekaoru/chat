@@ -74,6 +74,12 @@ type ChatContextPolicyResponse struct {
 	ContextCompactEnabled bool `json:"contextCompactEnabled"`
 }
 
+// WebSearchPolicyResponse 返回聊天侧内置联网搜索能力策略。
+type WebSearchPolicyResponse struct {
+	Enabled      bool `json:"enabled"`
+	FetchEnabled bool `json:"fetchEnabled"`
+}
+
 // ── mapping 函数 ─────────────────────────────────────────────────────────────
 
 func toAppPatchItems(items []PatchItem) []appsettings.PatchItem {

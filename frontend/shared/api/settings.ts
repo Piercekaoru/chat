@@ -16,6 +16,11 @@ export type ChatContextPolicy = {
   contextCompactEnabled: boolean;
 };
 
+export type WebSearchPolicy = {
+  enabled: boolean;
+  fetchEnabled: boolean;
+};
+
 export async function getModelOptionPolicy(accessToken: string): Promise<ModelOptionPolicy> {
   const data = await authedRequest<ModelOptionPolicyResponse>(
     "/api/v1/settings/model-option-policy",
@@ -44,6 +49,14 @@ export async function getMCPPolicy(accessToken: string): Promise<MCPPolicy> {
 export async function getChatContextPolicy(accessToken: string): Promise<ChatContextPolicy> {
   return authedRequest<ChatContextPolicy>(
     "/api/v1/settings/chat-context-policy",
+    { accessToken },
+    true,
+  );
+}
+
+export async function getWebSearchPolicy(accessToken: string): Promise<WebSearchPolicy> {
+  return authedRequest<WebSearchPolicy>(
+    "/api/v1/settings/web-search-policy",
     { accessToken },
     true,
   );

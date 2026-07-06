@@ -165,6 +165,28 @@ func buildPromptPlan(ctx context.Context, input promptPlanInput) PromptPlan {
 			SourceRefs:    toolDefinitionSourceRefs(input.ToolRuntime.definitions),
 		})
 	}
+
+	before = len(messages)
+	messages = injectWebSearchGuidance(messages, input.ToolRuntime, input.Config.WebSearchPrompt)
+	if len(messages) > before {
+		// 注入逻辑将指导消息插入系统前缀末尾。
+		inserted := 0
+		for inserted < len(messages) && messages[inserted].Role == "system" {
+			inserted++
+		}
+		tokenEstimate := int64(0)
+		if inserted > 0 {
+			tokenEstimate = estimateMessageTokens(messages[inserted-1])
+		}
+		trace.addBlock(PromptBlockTrace{
+			Kind:          PromptBlockToolGuidance,
+			Title:         "联网搜索规则",
+			TokenEstimate: tokenEstimate,
+			Cacheable:     false,
+			SourceCount:   1,
+			SourceRefs:    []PromptSourceRef{{SourceType: "builtin_tool", SourceID: webSearchToolName, Title: "Web Search"}},
+		})
+	}
 	messages = markLeadingSystemMessagesCacheable(messages)
 
 	trace.TotalTokenEstimate = estimatePromptTokens(messages)

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import dynamic from "next/dynamic";
-import { Box, CornerDownRight, Image, ImageOff, ImagePlus, LoaderCircle, PencilLine, Trash2 } from "lucide-react";
+import { Box, CornerDownRight, Globe, Image, ImageOff, ImagePlus, LoaderCircle, PencilLine, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -98,6 +98,8 @@ type ChatInputProps = {
   selectedSkills: SkillSummaryDTO[];
   defaultToolIDs: number[];
   queuedMessages: QueuedComposerMessage[];
+  webSearchAvailable: boolean;
+  webSearchEnabled: boolean;
   htmlVisualPromptEnabled: boolean;
   maxSelectedTools: number;
   maxSelectedSkills: number;
@@ -114,6 +116,7 @@ type ChatInputProps = {
   onSelectedToolsChange: (toolIDs: number[]) => void;
   onSelectedSkillsChange: (skills: SkillSummaryDTO[]) => void;
   onDefaultToolsChange: (toolIDs: number[]) => void | Promise<void>;
+  onWebSearchChange: (enabled: boolean) => void;
   onHTMLVisualPromptChange: (enabled: boolean) => void;
   onOptionsChange: React.Dispatch<React.SetStateAction<ConversationOptions>>;
   onOptionsReset: (defaults?: ConversationOptions) => void;
@@ -224,6 +227,8 @@ function ChatInputComponent({
   selectedSkills,
   defaultToolIDs,
   queuedMessages,
+  webSearchAvailable,
+  webSearchEnabled,
   htmlVisualPromptEnabled,
   maxSelectedTools,
   maxSelectedSkills,
@@ -240,6 +245,7 @@ function ChatInputComponent({
   onSelectedToolsChange,
   onSelectedSkillsChange,
   onDefaultToolsChange,
+  onWebSearchChange,
   onHTMLVisualPromptChange,
   onOptionsChange,
   onOptionsReset,
@@ -349,6 +355,7 @@ function ChatInputComponent({
   const ComposerModeIcon = composerModeIndicator?.icon;
   const modelOptionPolicyDisabled = modelOptionPolicy?.mode?.trim() === "disabled";
   const showMCPToolsButton = availableTools.length > 0 && !isMediaMode;
+  const showWebSearchButton = webSearchAvailable && !isMediaMode;
   const showHTMLVisualPromptButton = !isMediaMode;
   const hasComposerAttachments = attachments.length > 0 || uploadingAttachments.length > 0;
   const showSelectedSkills = selectedSkills.length > 0 && !isMediaMode;
@@ -886,6 +893,33 @@ function ChatInputComponent({
                   onSelectedToolsChange={onSelectedToolsChange}
                   onDefaultToolsChange={onDefaultToolsChange}
                 />
+              ) : null}
+
+              {showWebSearchButton ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InputGroupButton
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      className={cn(
+                        "size-7 rounded-md text-muted-foreground hover:text-foreground sm:size-8",
+                        webSearchEnabled && "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary",
+                      )}
+                      disabled={loading || uploading}
+                      aria-label={tComposer("webSearch")}
+                      aria-pressed={webSearchEnabled}
+                      onClick={() => onWebSearchChange(!webSearchEnabled)}
+                    >
+                      <Globe size={20} strokeWidth={1.4} />
+                    </InputGroupButton>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-72 text-xs leading-5">
+                    {webSearchEnabled
+                      ? tComposer("webSearchEnabled")
+                      : tComposer("webSearchDisabled")}
+                  </TooltipContent>
+                </Tooltip>
               ) : null}
 
               {showHTMLVisualPromptButton ? (

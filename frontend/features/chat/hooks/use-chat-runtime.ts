@@ -22,6 +22,7 @@ export function useChatRuntime({
   modelOptions,
   selectedToolIDs,
   selectedSkills,
+  webSearchEnabled,
   htmlVisualPromptEnabled,
   htmlVisualColorMode,
   options,
@@ -50,6 +51,7 @@ export function useChatRuntime({
   modelOptions: ChatModelOption[];
   selectedToolIDs: number[];
   selectedSkills: SkillSummaryDTO[];
+  webSearchEnabled: boolean;
   htmlVisualPromptEnabled: boolean;
   htmlVisualColorMode: "light" | "dark";
   options: ConversationOptions;
@@ -93,6 +95,7 @@ export function useChatRuntime({
     modelOptions,
     selectedToolIDs,
     selectedSkills,
+    webSearchEnabled,
     htmlVisualPromptEnabled,
     htmlVisualColorMode,
     options,

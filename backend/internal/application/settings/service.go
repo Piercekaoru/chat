@@ -163,14 +163,15 @@ func (s *Service) RuntimeValuesByNamespace(ctx context.Context, namespace string
 
 // validNamespaces 合法的 namespace 集合。
 var validNamespaces = map[string]bool{
-	"auth":    true,
-	"billing": true,
-	"chat":    true,
-	"storage": true,
-	"file":    true,
-	"extract": true,
-	"mcp":     true,
-	"circuit": true,
+	"auth":      true,
+	"billing":   true,
+	"chat":      true,
+	"storage":   true,
+	"file":      true,
+	"extract":   true,
+	"mcp":       true,
+	"circuit":   true,
+	"websearch": true,
 }
 
 // IsValidNamespace 判断 namespace 是否允许被动态配置。
@@ -425,7 +426,7 @@ func validatePatchItem(item PatchItem) error {
 		return validateStringMax(value, 255, key)
 	case "extract:tencent_ocr_secret_id", "extract:tencent_ocr_secret_key", "extract:aliyun_ocr_access_key_id", "extract:aliyun_ocr_access_key_secret":
 		return validateStringMax(value, 512, key)
-	case "auth:username_login_enabled", "auth:email_login_enabled", "auth:third_party_login_enabled", "auth:email_registration_enabled", "auth:email_verification_enabled", "auth:password_reset_enabled", "auth:email_registration_block_plus_alias", "auth:auto_link_verified_email", "auth:turnstile_registration_enabled", "auth:rate_limit_enabled", "billing:native_tool_billing_enabled", "chat:rag_enabled", "chat:message_embedding_enabled", "chat:semantic_context_enabled", "file:full_context_limit_enabled", "file:embedding_enabled", "file:embed_trigger_on_upload", "file:embedding_normalize", "extract:image_ocr_enabled", "extract:pdf_ocr_fallback_enabled", "mcp:mcp_enable":
+	case "auth:username_login_enabled", "auth:email_login_enabled", "auth:third_party_login_enabled", "auth:email_registration_enabled", "auth:email_verification_enabled", "auth:password_reset_enabled", "auth:email_registration_block_plus_alias", "auth:auto_link_verified_email", "auth:turnstile_registration_enabled", "auth:rate_limit_enabled", "billing:native_tool_billing_enabled", "chat:rag_enabled", "chat:message_embedding_enabled", "chat:semantic_context_enabled", "file:full_context_limit_enabled", "file:embedding_enabled", "file:embed_trigger_on_upload", "file:embedding_normalize", "extract:image_ocr_enabled", "extract:pdf_ocr_fallback_enabled", "mcp:mcp_enable", "websearch:web_search_enable", "websearch:web_fetch_enable":
 		if _, err := strconv.ParseBool(value); err != nil {
 			return fmt.Errorf("%s must be bool", key)
 		}
@@ -446,6 +447,28 @@ func validatePatchItem(item PatchItem) error {
 	case "mcp:mcp_tool_retry_count":
 		return validateIntMinMax(value, 0, 5, key)
 	case "mcp:mcp_tool_prompt":
+		return validateStringMax(value, 20000, key)
+	case "websearch:web_search_provider":
+		switch value {
+		case "searxng", "tavily":
+			return nil
+		default:
+			return fmt.Errorf("%s must be one of: searxng, tavily", key)
+		}
+	case "websearch:searxng_base_url":
+		if err := validateStringMax(value, 512, key); err != nil {
+			return err
+		}
+		return validateOptionalHTTPURL(value, key)
+	case "websearch:tavily_api_key":
+		return validateStringMax(value, 512, key)
+	case "websearch:web_search_max_results":
+		return validateIntMinMax(value, 1, 20, key)
+	case "websearch:web_search_timeout_seconds":
+		return validateIntMinMax(value, 1, 120, key)
+	case "websearch:web_fetch_max_chars":
+		return validateIntMinMax(value, 1000, 50000, key)
+	case "websearch:web_search_prompt":
 		return validateStringMax(value, 20000, key)
 	}
 	return nil

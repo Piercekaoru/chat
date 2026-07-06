@@ -353,6 +353,26 @@ func (r *RuntimeSettings) applyItem(cfg *config.Config, item domainsettings.Syst
 	case "mcp:mcp_tool_prompt":
 		cfg.MCPToolPrompt = item.Value
 
+		// 联网搜索配置
+	case "websearch:web_search_enable":
+		cfg.WebSearchEnable = toBool(item.Value, cfg.WebSearchEnable)
+	case "websearch:web_search_provider":
+		cfg.WebSearchProvider = strings.TrimSpace(item.Value)
+	case "websearch:searxng_base_url":
+		cfg.WebSearchSearXNGBaseURL = strings.TrimSpace(item.Value)
+	case "websearch:tavily_api_key":
+		cfg.WebSearchTavilyAPIKey = strings.TrimSpace(item.Value)
+	case "websearch:web_search_max_results":
+		cfg.WebSearchMaxResults = toInt(item.Value, cfg.WebSearchMaxResults)
+	case "websearch:web_search_timeout_seconds":
+		cfg.WebSearchTimeoutSeconds = toInt(item.Value, cfg.WebSearchTimeoutSeconds)
+	case "websearch:web_fetch_enable":
+		cfg.WebSearchFetchEnable = toBool(item.Value, cfg.WebSearchFetchEnable)
+	case "websearch:web_fetch_max_chars":
+		cfg.WebSearchFetchMaxChars = toInt(item.Value, cfg.WebSearchFetchMaxChars)
+	case "websearch:web_search_prompt":
+		cfg.WebSearchPrompt = item.Value
+
 	}
 }
 
@@ -401,6 +421,36 @@ func (r *RuntimeSettings) normalizeConfig(cfg *config.Config) {
 		cfg.FileFullContextMaxBytes = 0
 		cfg.FileFullContextMaxTokens = 0
 		cfg.FileFullContextPDFMaxPages = 0
+	}
+	switch strings.TrimSpace(cfg.WebSearchProvider) {
+	case "searxng", "tavily":
+	default:
+		cfg.WebSearchProvider = "searxng"
+	}
+	// 搜索源缺少必需配置时收敛为关闭，避免请求阶段才失败。
+	if cfg.WebSearchEnable {
+		switch cfg.WebSearchProvider {
+		case "tavily":
+			if strings.TrimSpace(cfg.WebSearchTavilyAPIKey) == "" {
+				cfg.WebSearchEnable = false
+			}
+		default:
+			if strings.TrimSpace(cfg.WebSearchSearXNGBaseURL) == "" {
+				cfg.WebSearchEnable = false
+			}
+		}
+	}
+	if cfg.WebSearchMaxResults <= 0 {
+		cfg.WebSearchMaxResults = 5
+	}
+	if cfg.WebSearchMaxResults > 20 {
+		cfg.WebSearchMaxResults = 20
+	}
+	if cfg.WebSearchTimeoutSeconds <= 0 {
+		cfg.WebSearchTimeoutSeconds = 15
+	}
+	if cfg.WebSearchFetchMaxChars <= 0 {
+		cfg.WebSearchFetchMaxChars = 8000
 	}
 }
 

@@ -26,18 +26,19 @@ const (
 )
 
 type executeAssistantToolCallsInput struct {
-	UserID         uint
-	ConversationID uint
-	MessageID      uint
-	RequestID      string
-	RunID          string
-	ToolCalls      []llm.ToolCall
-	ToolCallLimit  int
-	TraceRecorder  *messageTraceRecorder
-	ToolNameMap    map[string]string
-	MCPConfigs     map[string]mcp.CallConfig
-	ToolSchemas    map[string]json.RawMessage
-	Ledger         *toolExecutionLedger
+	UserID          uint
+	ConversationID  uint
+	MessageID       uint
+	RequestID       string
+	RunID           string
+	ToolCalls       []llm.ToolCall
+	ToolCallLimit   int
+	TraceRecorder   *messageTraceRecorder
+	ToolNameMap     map[string]string
+	MCPConfigs      map[string]mcp.CallConfig
+	ToolSchemas     map[string]json.RawMessage
+	BuiltinHandlers map[string]builtinToolHandler
+	Ledger          *toolExecutionLedger
 }
 
 type executeAssistantToolCallsResult struct {
@@ -101,8 +102,9 @@ func (s *Service) executeAssistantToolCalls(ctx context.Context, input executeAs
 			ErrorJSON:      "",
 		}
 
+		builtinHandler := resolveBuiltinToolHandler(modelToolName, input.BuiltinHandlers)
 		mcpConfig := resolveMCPConfig(modelToolName, input.MCPConfigs)
-		if mcpConfig == nil {
+		if builtinHandler == nil && mcpConfig == nil {
 			row.Status = "error"
 			row.ErrorJSON = toolNotEnabledForRunMessage(modelToolName)
 			slots[i] = toolExecutionSlot{
@@ -152,6 +154,7 @@ func (s *Service) executeAssistantToolCalls(ctx context.Context, input executeAs
 			ToolName:       row.ToolName,
 			ArgumentsJSON:  row.InputJSON,
 			MCPConfig:      mcpConfig,
+			Builtin:        builtinHandler,
 		})
 		row.LatencyMS = time.Since(toolStartedAt).Milliseconds()
 		if row.LatencyMS < 0 {
@@ -567,4 +570,12 @@ func resolveMCPConfig(toolName string, configs map[string]mcp.CallConfig) *mcp.C
 		return nil
 	}
 	return &cfg
+}
+
+func resolveBuiltinToolHandler(toolName string, handlers map[string]builtinToolHandler) builtinToolHandler {
+	value := strings.TrimSpace(toolName)
+	if value == "" || len(handlers) == 0 {
+		return nil
+	}
+	return handlers[value]
 }

@@ -16,10 +16,11 @@ import (
 )
 
 type selectedToolRuntime struct {
-	definitions []llm.ToolDefinition
-	nameMap     map[string]string
-	mcpConfigs  map[string]mcp.CallConfig
-	schemas     map[string]json.RawMessage
+	definitions     []llm.ToolDefinition
+	nameMap         map[string]string
+	mcpConfigs      map[string]mcp.CallConfig
+	schemas         map[string]json.RawMessage
+	builtinHandlers map[string]builtinToolHandler
 }
 
 func injectMCPToolGuidance(messages []llm.Message, runtime selectedToolRuntime, customPrompt string) []llm.Message {

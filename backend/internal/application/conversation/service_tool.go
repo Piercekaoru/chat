@@ -18,6 +18,7 @@ type ExecuteToolInput struct {
 	ToolName       string
 	ArgumentsJSON  string
 	MCPConfig      *mcp.CallConfig
+	Builtin        builtinToolHandler // 平台内置工具执行器；非空时优先于 MCP
 }
 
 func (s *Service) executeToolCall(ctx context.Context, input ExecuteToolInput) (string, error) {
@@ -25,17 +26,25 @@ func (s *Service) executeToolCall(ctx context.Context, input ExecuteToolInput) (
 	if toolName == "" {
 		return "", fmt.Errorf("tool name is required")
 	}
-	if input.MCPConfig == nil {
-		return "", fmt.Errorf("tool %s is not enabled for this run", toolName)
-	}
-	if s.mcpClient == nil {
-		return "", fmt.Errorf("mcp client is not configured")
+	if input.Builtin == nil {
+		if input.MCPConfig == nil {
+			return "", fmt.Errorf("tool %s is not enabled for this run", toolName)
+		}
+		if s.mcpClient == nil {
+			return "", fmt.Errorf("mcp client is not configured")
+		}
 	}
 	cfg := s.cfg.Snapshot()
 
 	limit := cfg.MCPMaxConcurrentCalls
 	if limit <= 0 {
 		limit = 8
+	}
+
+	if input.Builtin != nil {
+		return s.executeWithToolLimiter(ctx, limit, func() (string, error) {
+			return input.Builtin(ctx, strings.TrimSpace(input.ArgumentsJSON))
+		})
 	}
 
 	return s.executeWithToolLimiter(ctx, limit, func() (string, error) {

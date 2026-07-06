@@ -10,6 +10,7 @@ func (m *Module) RegisterRoutes(api *gin.RouterGroup) {
 	api.GET("/settings/model-option-policy", m.Handler.GetModelOptionPolicy)
 	api.GET("/settings/mcp-policy", m.Handler.GetMCPPolicy)
 	api.GET("/settings/chat-context-policy", m.Handler.GetChatContextPolicy)
+	api.GET("/settings/web-search-policy", m.Handler.GetWebSearchPolicy)
 }
 
 // RegisterAdminRoutes 注册 settings 管理路由（由管理员中间件保护）。

@@ -3,7 +3,8 @@
   "sections": {
     "mcpTools": "MCP 工具",
     "servers": "MCP 服务",
-    "tools": "MCP 工具"
+    "tools": "MCP 工具",
+    "webSearch": "联网搜索"
   },
   "fields": {
     "mcpEnable": {
@@ -38,6 +39,46 @@
     "toolRetry": {
       "label": "MCP Tool 重试次数",
       "description": "MCP Tool Call 失败后的重试次数。默认 0。"
+    },
+    "webSearchEnable": {
+      "label": "启用联网搜索",
+      "description": "为聊天提供平台内置的 web_search 工具；模型需支持函数调用。开启后用户可在输入框切换联网开关。"
+    },
+    "webSearchProvider": {
+      "label": "搜索源",
+      "description": "内置联网搜索使用的搜索服务。",
+      "options": {
+        "searxng": "SearXNG（自建）",
+        "tavily": "Tavily"
+      }
+    },
+    "searxngBaseURL": {
+      "label": "SearXNG 地址",
+      "description": "SearXNG 实例地址，例如 http://searxng:8080；需在实例 settings.yml 中开启 json 输出格式。"
+    },
+    "tavilyAPIKey": {
+      "label": "Tavily API Key",
+      "description": "在 tavily.com 获取；免费额度每月 1000 次。保存后加密存储。"
+    },
+    "webSearchMaxResults": {
+      "label": "结果数上限",
+      "description": "单次搜索返回给模型的结果数上限（1-20）。"
+    },
+    "webSearchTimeout": {
+      "label": "超时（秒）",
+      "description": "搜索与网页抓取的请求超时。"
+    },
+    "webFetchEnable": {
+      "label": "启用网页抓取",
+      "description": "同时提供 web_fetch 工具，模型可在摘要不足时抓取网页正文。"
+    },
+    "webFetchMaxChars": {
+      "label": "抓取字符上限",
+      "description": "网页正文注入模型上下文的最大字符数（1000-50000）。"
+    },
+    "webSearchPrompt": {
+      "label": "联网提示词",
+      "description": "启用联网搜索时注入的使用规则；留空使用内置默认值（含当前日期与引用来源要求）。"
     }
   },
   "status": {

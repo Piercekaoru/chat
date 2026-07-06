@@ -21,6 +21,7 @@ import (
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/infra/embedding"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/infra/llm"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/infra/mcp"
+	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/infra/websearch"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/repository"
 	"go.uber.org/zap"
 )
@@ -74,6 +75,7 @@ type Service struct {
 	mcpRepo           repository.MCPRepository
 	llmClient         *llm.Client
 	mcpClient         *mcp.Client
+	webSearch         *websearch.Client
 	uploadSvc         *appupload.Service
 	compactSvc        *appcompact.Service
 	embeddingSvc      *appembedding.Service
@@ -140,6 +142,7 @@ type SendMessageInput struct {
 	FileIDs                 []string
 	SelectedToolIDs         []uint
 	SkillIDs                []uint
+	WebSearchEnabled        bool
 	HTMLVisualPromptEnabled bool
 	HTMLVisualColorMode     string
 	ParentMessagePublicID   string
@@ -234,6 +237,7 @@ func NewServiceWithRuntime(
 		memoryRecorder:    memoryRecorder,
 		llmClient:         llmClient,
 		mcpClient:         mcpClient,
+		webSearch:         websearch.NewClientWithEnv(cfg.Snapshot().Env, cfg.Snapshot().SSRFProtectionEnabled),
 		compactSvc:        compactSvc,
 		embeddingSvc:      embeddingSvc,
 		processingSvc:     processingSvc,

@@ -25,6 +25,7 @@ export function useChatSubmitStream({
   modelOptions,
   selectedToolIDs,
   selectedSkills,
+  webSearchEnabled,
   htmlVisualPromptEnabled,
   htmlVisualColorMode,
   options,
@@ -62,6 +63,7 @@ export function useChatSubmitStream({
   modelOptions: ChatModelOption[];
   selectedToolIDs: number[];
   selectedSkills: SkillSummaryDTO[];
+  webSearchEnabled: boolean;
   htmlVisualPromptEnabled: boolean;
   htmlVisualColorMode: "light" | "dark";
   options: ConversationOptions;
@@ -103,6 +105,7 @@ export function useChatSubmitStream({
     modelOptions,
     selectedToolIDs,
     selectedSkills,
+    webSearchEnabled,
     htmlVisualPromptEnabled,
     htmlVisualColorMode,
     options,

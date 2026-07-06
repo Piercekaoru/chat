@@ -134,6 +134,7 @@ type QueuedChatSubmission = {
   options: ConversationOptions;
   selectedToolIDs: number[];
   selectedSkills: SkillSummaryDTO[];
+  webSearchEnabled: boolean;
   htmlVisualPromptEnabled: boolean;
   htmlVisualColorMode: "light" | "dark";
 };
@@ -260,6 +261,7 @@ export function useChatMessageSubmit({
   modelOptions,
   selectedToolIDs,
   selectedSkills,
+  webSearchEnabled,
   htmlVisualPromptEnabled,
   htmlVisualColorMode,
   options,
@@ -301,6 +303,7 @@ export function useChatMessageSubmit({
   modelOptions: ChatModelOption[];
   selectedToolIDs: number[];
   selectedSkills: SkillSummaryDTO[];
+  webSearchEnabled: boolean;
   htmlVisualPromptEnabled: boolean;
   htmlVisualColorMode: "light" | "dark";
   options: ConversationOptions;
@@ -460,6 +463,7 @@ export function useChatMessageSubmit({
       const requestOptions = queuedSubmission?.options ?? options;
       const requestSelectedToolIDs = queuedSubmission?.selectedToolIDs ?? selectedToolIDs;
       const requestSelectedSkills = queuedSubmission?.selectedSkills ?? selectedSkills;
+      const requestWebSearchEnabled = queuedSubmission?.webSearchEnabled ?? webSearchEnabled;
       const requestHTMLVisualPromptEnabled = queuedSubmission?.htmlVisualPromptEnabled ?? htmlVisualPromptEnabled;
       const requestHTMLVisualColorMode = queuedSubmission?.htmlVisualColorMode ?? htmlVisualColorMode;
       const selectedModel = modelOptions.find((item) => item.platformModelName === requestPlatformModelName) ?? null;
@@ -754,6 +758,7 @@ export function useChatMessageSubmit({
             content: payloadContent,
             selectedToolIDs: requestSelectedToolIDs.length > 0 ? requestSelectedToolIDs : undefined,
             skillIDs: requestSelectedSkills.length > 0 ? requestSelectedSkills.map((skill) => skill.id) : undefined,
+            webSearch: requestWebSearchEnabled || undefined,
             htmlVisualPrompt: requestHTMLVisualPromptEnabled || undefined,
             htmlVisualColorMode: requestHTMLVisualPromptEnabled ? requestHTMLVisualColorMode : undefined,
           };
@@ -962,6 +967,7 @@ export function useChatMessageSubmit({
       modelOptions,
       selectedToolIDs,
       selectedSkills,
+      webSearchEnabled,
       htmlVisualPromptEnabled,
       htmlVisualColorMode,
       selectedPlatformModelName,
@@ -997,6 +1003,7 @@ export function useChatMessageSubmit({
         options: sanitizeConversationOptions(options),
         selectedToolIDs: selectedToolIDs.slice(),
         selectedSkills: selectedSkills.slice(),
+        webSearchEnabled,
         htmlVisualPromptEnabled,
         htmlVisualColorMode,
       },
@@ -1009,6 +1016,7 @@ export function useChatMessageSubmit({
     draft,
     htmlVisualColorMode,
     htmlVisualPromptEnabled,
+    webSearchEnabled,
     options,
     selectedPlatformModelName,
     selectedSkills,

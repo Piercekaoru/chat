@@ -405,6 +405,7 @@ export type SendMessageRequest = {
   fileIDs?: string[];
   selectedToolIDs?: number[];
   skillIDs?: number[];
+  webSearch?: boolean;
   htmlVisualPrompt?: boolean;
   htmlVisualColorMode?: "light" | "dark";
   parentMessagePublicID?: string;

@@ -3,7 +3,8 @@
   "sections": {
     "mcpTools": "MCP tools",
     "servers": "MCP servers",
-    "tools": "MCP tools"
+    "tools": "MCP tools",
+    "webSearch": "Web Search"
   },
   "fields": {
     "mcpEnable": {
@@ -38,6 +39,46 @@
     "toolRetry": {
       "label": "MCP tool retries",
       "description": "Retry count after an MCP tool call fails. Default 0."
+    },
+    "webSearchEnable": {
+      "label": "Enable web search",
+      "description": "Provide the built-in web_search tool for chat; requires models with function calling. Users get a web-search toggle in the composer."
+    },
+    "webSearchProvider": {
+      "label": "Search provider",
+      "description": "The search service used by the built-in web search.",
+      "options": {
+        "searxng": "SearXNG (self-hosted)",
+        "tavily": "Tavily"
+      }
+    },
+    "searxngBaseURL": {
+      "label": "SearXNG base URL",
+      "description": "SearXNG instance address, e.g. http://searxng:8080; the instance must enable the json output format in settings.yml."
+    },
+    "tavilyAPIKey": {
+      "label": "Tavily API key",
+      "description": "Get one at tavily.com; the free tier includes 1,000 requests per month. Stored encrypted."
+    },
+    "webSearchMaxResults": {
+      "label": "Max results",
+      "description": "Maximum number of results returned to the model per search (1-20)."
+    },
+    "webSearchTimeout": {
+      "label": "Timeout (seconds)",
+      "description": "Request timeout for search and page fetch."
+    },
+    "webFetchEnable": {
+      "label": "Enable web fetch",
+      "description": "Also provide the web_fetch tool so the model can read a page when snippets are not enough."
+    },
+    "webFetchMaxChars": {
+      "label": "Fetch max characters",
+      "description": "Maximum characters of page text injected into the model context (1000-50000)."
+    },
+    "webSearchPrompt": {
+      "label": "Web search prompt",
+      "description": "Guidance injected when web search is enabled; leave empty for the built-in default (includes current date and citation rules)."
     }
   },
   "status": {

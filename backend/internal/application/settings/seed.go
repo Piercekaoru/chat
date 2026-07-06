@@ -180,6 +180,17 @@ func defaultSettings() []domainsettings.SystemSetting {
 		{Namespace: "mcp", Key: "mcp_max_tool_calls_per_run", Value: "8", ValueType: "int", Description: "单次 MCP 工具运行最大 MCP Tool Call 次数"},
 		{Namespace: "mcp", Key: "mcp_tool_prompt", Value: "", ValueType: "string", Description: "MCP Tool 调用提示词；空串使用内置默认值"},
 
+		// 联网搜索配置
+		{Namespace: "websearch", Key: "web_search_enable", Value: "false", ValueType: "bool", Description: "启用内置联网搜索工具（需模型支持函数调用）"},
+		{Namespace: "websearch", Key: "web_search_provider", Value: "searxng", ValueType: "string", Description: "联网搜索源(searxng/tavily)"},
+		{Namespace: "websearch", Key: "searxng_base_url", Value: "", ValueType: "string", Description: "SearXNG 实例地址；需在 settings.yml 开启 json 输出"},
+		{Namespace: "websearch", Key: "tavily_api_key", Value: "", ValueType: "string", Description: "Tavily API Key"},
+		{Namespace: "websearch", Key: "web_search_max_results", Value: "5", ValueType: "int", Description: "单次搜索返回结果数上限"},
+		{Namespace: "websearch", Key: "web_search_timeout_seconds", Value: "15", ValueType: "int", Description: "搜索与网页抓取超时(秒)"},
+		{Namespace: "websearch", Key: "web_fetch_enable", Value: "true", ValueType: "bool", Description: "同时提供 web_fetch 网页抓取工具"},
+		{Namespace: "websearch", Key: "web_fetch_max_chars", Value: "8000", ValueType: "int", Description: "网页抓取注入模型的最大字符数"},
+		{Namespace: "websearch", Key: "web_search_prompt", Value: "", ValueType: "string", Description: "联网搜索附加提示词；空串使用内置默认值"},
+
 		// 熔断配置
 		{Namespace: "circuit", Key: "channel_failure_threshold", Value: "3", ValueType: "int", Description: "熔断触发次数"},
 		{Namespace: "circuit", Key: "channel_failure_window_seconds", Value: "120", ValueType: "int", Description: "计数窗口(秒)"},

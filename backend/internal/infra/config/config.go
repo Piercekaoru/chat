@@ -463,6 +463,16 @@ type Config struct {
 	MCPMaxLLMCallsPerRun          int
 	MCPMaxToolCallsPerRun         int
 	MCPToolPrompt                 string
+	// 联网搜索配置
+	WebSearchEnable         bool
+	WebSearchProvider       string // searxng | tavily
+	WebSearchSearXNGBaseURL string // SearXNG 实例地址，需开启 JSON 输出
+	WebSearchTavilyAPIKey   string // Tavily API Key
+	WebSearchMaxResults     int    // 单次搜索返回结果数上限
+	WebSearchTimeoutSeconds int    // 搜索与抓取超时(秒)
+	WebSearchFetchEnable    bool   // 是否同时提供 web_fetch 网页抓取工具
+	WebSearchFetchMaxChars  int    // 网页抓取注入模型的最大字符数
+	WebSearchPrompt         string // 联网搜索附加提示词；空串使用内置默认值
 }
 
 // defaultYAMLPaths 固定读取仓库根目录的 config.yaml。
@@ -672,6 +682,15 @@ func Load() Config {
 		MCPMaxLLMCallsPerRun:              5,
 		MCPMaxToolCallsPerRun:             8,
 		MCPToolPrompt:                     "",
+		WebSearchEnable:                   false,
+		WebSearchProvider:                 "searxng",
+		WebSearchSearXNGBaseURL:           "",
+		WebSearchTavilyAPIKey:             "",
+		WebSearchMaxResults:               5,
+		WebSearchTimeoutSeconds:           15,
+		WebSearchFetchEnable:              true,
+		WebSearchFetchMaxChars:            8000,
+		WebSearchPrompt:                   "",
 	}
 }
 

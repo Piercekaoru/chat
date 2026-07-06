@@ -58,10 +58,18 @@ import {
   toToolEditorField,
   toolFieldID,
 } from "@/features/admin/model/tool-settings";
+import {
+  WEB_SEARCH_SETTINGS_FIELDS,
+  applyWebSearchSettingsDefaults,
+  flattenWebSearchSettings,
+  toWebSearchEditorField,
+  webSearchFieldID,
+} from "@/features/admin/model/web-search-settings";
 import { resolveAdminErrorMessage } from "@/features/admin/utils/admin-error";
 import { cn } from "@/lib/utils";
 import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
 import { CopyActionButton } from "@/shared/components/copy-action";
+import { configuredSettingsMap } from "@/shared/lib/settings-meta";
 import {
   SettingsFieldItem,
   SettingsFieldList,
@@ -158,8 +166,15 @@ export function AdminToolsPage() {
   const tActions = useTranslations("common.actions");
   const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
-  const [settingsMap, setSettingsMap] = React.useState<Record<string, string>>(() => applyToolSettingsDefaults({}));
-  const [savedMap, setSavedMap] = React.useState<Record<string, string>>(() => applyToolSettingsDefaults({}));
+  const [settingsMap, setSettingsMap] = React.useState<Record<string, string>>(() => ({
+    ...applyToolSettingsDefaults({}),
+    ...applyWebSearchSettingsDefaults({}),
+  }));
+  const [savedMap, setSavedMap] = React.useState<Record<string, string>>(() => ({
+    ...applyToolSettingsDefaults({}),
+    ...applyWebSearchSettingsDefaults({}),
+  }));
+  const [webSearchConfiguredMap, setWebSearchConfiguredMap] = React.useState<Record<string, boolean>>({});
   const [servers, setServers] = React.useState<AdminMCPServerDTO[]>([]);
   const [serversLoading, setServersLoading] = React.useState(true);
   const [serverQuery, setServerQuery] = React.useState("");
@@ -189,6 +204,8 @@ export function AdminToolsPage() {
   const [toolForm, setToolForm] = React.useState<ToolFormState | null>(null);
   const [toolSaving, setToolSaving] = React.useState(false);
   const mcpEnabled = settingsMap["mcp.mcp_enable"] === "true";
+  const webSearchEnabled = settingsMap["websearch.web_search_enable"] === "true";
+  const webSearchProvider = settingsMap["websearch.web_search_provider"] || "searxng";
   const mcpEnableField = React.useMemo(
     () => TOOL_SETTINGS_FIELDS.find((field) => field.key === "mcp_enable"),
     [],
@@ -305,9 +322,10 @@ export function AdminToolsPage() {
         return;
       }
       const grouped = await listAdminSettings(token);
-      const flattened = flattenToolSettings(grouped);
+      const flattened = { ...flattenToolSettings(grouped), ...flattenWebSearchSettings(grouped) };
       setSettingsMap(flattened);
       setSavedMap(flattened);
+      setWebSearchConfiguredMap(configuredSettingsMap({ websearch: grouped.websearch ?? [] }));
     } catch (error) {
       toast.error(t("toast.settingsLoadFailed"), { description: resolveAdminErrorMessage(error, t("toast.unknownError")) });
     } finally {
@@ -422,9 +440,10 @@ export function AdminToolsPage() {
         return;
       }
       const grouped = await patchAdminSettings(token, { items });
-      const flattened = flattenToolSettings(grouped);
+      const flattened = { ...flattenToolSettings(grouped), ...flattenWebSearchSettings(grouped) };
       setSettingsMap(flattened);
       setSavedMap(flattened);
+      setWebSearchConfiguredMap(configuredSettingsMap({ websearch: grouped.websearch ?? [] }));
       toast.success(t("toast.settingsUpdated"));
     } catch (error) {
       toast.error(t("toast.saveFailed"), { description: resolveAdminErrorMessage(error, t("toast.unknownError")) });
@@ -432,6 +451,48 @@ export function AdminToolsPage() {
       setSaving(false);
     }
   }, [dirtyFieldIDs, settingsMap, t]);
+
+  const webSearchDirtyFieldIDs = React.useMemo(() => {
+    const result = new Set<string>();
+    for (const field of WEB_SEARCH_SETTINGS_FIELDS) {
+      const id = webSearchFieldID(field);
+      if ((settingsMap[id] ?? "") !== (savedMap[id] ?? "")) {
+        result.add(id);
+      }
+    }
+    return result;
+  }, [savedMap, settingsMap]);
+  const handleSaveWebSearchSettings = React.useCallback(async () => {
+    const items: PatchSettingItem[] = WEB_SEARCH_SETTINGS_FIELDS
+      .filter((field) => webSearchDirtyFieldIDs.has(webSearchFieldID(field)))
+      .map((field) => ({
+        namespace: field.namespace,
+        key: field.key,
+        value: settingsMap[webSearchFieldID(field)] ?? "",
+      }));
+    if (items.length === 0) {
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const token = await resolveAccessToken();
+      if (!token) {
+        toast.error(t("toast.sessionExpired"), { description: t("toast.sessionExpiredDescription") });
+        return;
+      }
+      const grouped = await patchAdminSettings(token, { items });
+      const flattened = { ...flattenToolSettings(grouped), ...flattenWebSearchSettings(grouped) };
+      setSettingsMap(flattened);
+      setSavedMap(flattened);
+      setWebSearchConfiguredMap(configuredSettingsMap({ websearch: grouped.websearch ?? [] }));
+      toast.success(t("toast.settingsUpdated"));
+    } catch (error) {
+      toast.error(t("toast.saveFailed"), { description: resolveAdminErrorMessage(error, t("toast.unknownError")) });
+    } finally {
+      setSaving(false);
+    }
+  }, [settingsMap, t, webSearchDirtyFieldIDs]);
 
   const openCreateServerDialog = React.useCallback(() => {
     setServerForm(EMPTY_SERVER_FORM);
@@ -890,6 +951,63 @@ export function AdminToolsPage() {
           />
           </Field>
         </CollapsibleMotionContent>
+      </SettingsSection>
+
+      <SettingsSection
+        title={t("sections.webSearch")}
+        actions={
+          webSearchDirtyFieldIDs.size > 0 ? (
+            <Button type="button" size="sm" disabled={loading || saving} onClick={() => void handleSaveWebSearchSettings()}>
+              <Save className="size-3.5 stroke-1" />
+              {tActions("save")}
+            </Button>
+          ) : null
+        }
+      >
+        <SettingsFieldList>
+          {WEB_SEARCH_SETTINGS_FIELDS.filter((field) => field.key === "web_search_enable").map((field) => {
+            const id = webSearchFieldID(field);
+            return (
+              <SettingsFieldItem key={id} index={0}>
+                <SettingsFieldEditor
+                  field={toWebSearchEditorField(field, (key) => t(`fields.${key}`))}
+                  value={settingsMap[id] ?? ""}
+                  dirty={(settingsMap[id] ?? "") !== (savedMap[id] ?? "")}
+                  disabled={loading || saving}
+                  onChange={(value) => setSettingsMap((prev) => ({ ...prev, [id]: value }))}
+                />
+              </SettingsFieldItem>
+            );
+          })}
+          <CollapsibleMotionContent open={webSearchEnabled} contentClassName="-mx-px px-px pb-px">
+            {WEB_SEARCH_SETTINGS_FIELDS.filter((field) => {
+              if (field.key === "web_search_enable") {
+                return false;
+              }
+              if (field.key === "searxng_base_url") {
+                return webSearchProvider === "searxng";
+              }
+              if (field.key === "tavily_api_key") {
+                return webSearchProvider === "tavily";
+              }
+              return true;
+            }).map((field, index) => {
+              const id = webSearchFieldID(field);
+              return (
+                <SettingsFieldItem key={id} index={index + 1}>
+                  <SettingsFieldEditor
+                    field={toWebSearchEditorField(field, (key) => t(`fields.${key}`))}
+                    value={settingsMap[id] ?? ""}
+                    configured={webSearchConfiguredMap[id]}
+                    dirty={(settingsMap[id] ?? "") !== (savedMap[id] ?? "")}
+                    disabled={loading || saving}
+                    onChange={(value) => setSettingsMap((prev) => ({ ...prev, [id]: value }))}
+                  />
+                </SettingsFieldItem>
+              );
+            })}
+          </CollapsibleMotionContent>
+        </SettingsFieldList>
       </SettingsSection>
 
       <Sheet open={Boolean(toolSheetServer)} onOpenChange={(open) => !open && setToolSheetServerID(null)}>

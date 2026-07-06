@@ -1137,6 +1137,7 @@ export function AppChatArea() {
             badgeLabel={activeRouteProject ? t("projectMode") : undefined}
             badgeTooltip={activeRouteProject ? t("projectModeTooltip") : undefined}
             contentWidthClassName={chatContentWidthClassName}
+            showBrandLogo={!activeRouteProject}
           >
             <ChatInput {...chatInputProps} />
           </ChatEmptyState>

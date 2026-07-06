@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { APP_BRAND_NAME } from "@/shared/brand";
 import { cn } from "@/lib/utils";
 
 type ChatEmptyStateProps = {
@@ -12,6 +14,7 @@ type ChatEmptyStateProps = {
   badgeLabel?: string;
   badgeTooltip?: string;
   contentWidthClassName?: string;
+  showBrandLogo?: boolean;
   children?: React.ReactNode;
 };
 
@@ -20,7 +23,7 @@ const CHAT_EMPTY_TEXT_TRANSITION = {
   ease: [0.16, 1, 0.3, 1] as const,
 };
 
-export function ChatEmptyState({ greetingTitle, badgeLabel, badgeTooltip, contentWidthClassName = "max-w-[1080px]", children }: ChatEmptyStateProps) {
+export function ChatEmptyState({ greetingTitle, badgeLabel, badgeTooltip, contentWidthClassName = "max-w-[1080px]", showBrandLogo = false, children }: ChatEmptyStateProps) {
   const badge = badgeLabel ? (
     <span className="absolute left-full top-0 ml-1.5">
       <Badge
@@ -35,6 +38,24 @@ export function ChatEmptyState({ greetingTitle, badgeLabel, badgeTooltip, conten
 
   return (
     <div className="flex h-full min-h-0 flex-col items-center justify-center px-3 py-12 text-center md:px-6 md:py-20">
+      {showBrandLogo ? (
+        <motion.div
+          layout
+          className="mb-5 flex justify-center md:mb-6"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={CHAT_EMPTY_TEXT_TRANSITION}
+        >
+          <Image
+            src="/openachieve-wordmark.png"
+            alt={APP_BRAND_NAME}
+            width={2000}
+            height={666}
+            priority
+            className="h-auto w-[180px] select-none md:w-[240px]"
+          />
+        </motion.div>
+      ) : null}
       <motion.div layout className="relative inline-flex max-w-[calc(100%-4.5rem)] justify-center">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div

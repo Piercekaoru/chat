@@ -58,8 +58,11 @@ type SearchOutput struct {
 }
 
 // Client 执行联网搜索与网页抓取。
+// 搜索源地址由管理员配置（常见为内网自建 SearXNG），走不受 SSRF 限制的可信通道；
+// 网页抓取的 URL 来自模型输出，始终走带 SSRF 防护的通道。
 type Client struct {
-	httpClient            *http.Client
+	httpClient            *http.Client // 带 SSRF 防护，用于抓取模型提供的 URL
+	trustedHTTPClient     *http.Client // 不带 SSRF 防护，用于访问管理员配置的搜索源
 	env                   string
 	ssrfProtectionEnabled bool
 }
@@ -67,9 +70,13 @@ type Client struct {
 // NewClientWithEnv 创建带运行环境的联网搜索客户端。
 func NewClientWithEnv(env string, ssrfProtectionEnabled bool) *Client {
 	transport := security.NewOutboundHTTPTransport(env, ssrfProtectionEnabled, 10*time.Second)
+	trustedTransport := security.NewOutboundHTTPTransport(env, false, 10*time.Second)
 	return &Client{
 		httpClient: &http.Client{
 			Transport: platformtracing.NewHTTPTransport(transport),
+		},
+		trustedHTTPClient: &http.Client{
+			Transport: platformtracing.NewHTTPTransport(trustedTransport),
 		},
 		env:                   env,
 		ssrfProtectionEnabled: ssrfProtectionEnabled,

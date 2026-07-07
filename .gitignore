@@ -166,3 +166,5 @@ docker-compose.local.yml
 
 .DS_Store
 .idea
+# Docker image exports
+*.tar.gz

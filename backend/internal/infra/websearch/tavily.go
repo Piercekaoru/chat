@@ -40,7 +40,7 @@ func (c *Client) searchTavily(ctx context.Context, cfg ProviderConfig, input Sea
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.trustedHTTPClient.Do(req)
 	if err != nil {
 		return SearchOutput{}, fmt.Errorf("tavily request failed: %w", err)
 	}

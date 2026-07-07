@@ -327,17 +327,37 @@ func mergeChatStreamToolCalls(parsed map[string]interface{}, result *GenerateOut
 	if len(items) == 0 {
 		return
 	}
-	for fallbackIndex, raw := range items {
+	for _, raw := range items {
 		payload := asMap(raw)
-		index := int(toInt64(payload["index"]))
+		id := strings.TrimSpace(getString(payload["id"]))
+		index := -1
+		if rawIndex, hasIndex := payload["index"]; hasIndex {
+			index = int(toInt64(rawIndex))
+		}
 		if index < 0 {
-			index = fallbackIndex
+			// 部分 OpenAI 兼容网关不下发 index：id 匹配已有调用则续片；新 id 视为新调用；
+			// 无 id 的分片归并到最近一个调用，避免并行调用参数拼接。
+			if id != "" {
+				for i := range result.ToolCalls {
+					if result.ToolCalls[i].ToolCallID == id {
+						index = i
+						break
+					}
+				}
+				if index < 0 {
+					index = len(result.ToolCalls)
+				}
+			} else if len(result.ToolCalls) > 0 {
+				index = len(result.ToolCalls) - 1
+			} else {
+				index = 0
+			}
 		}
 		for len(result.ToolCalls) <= index {
 			result.ToolCalls = append(result.ToolCalls, ToolCall{Status: "requested"})
 		}
 		current := result.ToolCalls[index]
-		if id := strings.TrimSpace(getString(payload["id"])); id != "" {
+		if id != "" {
 			current.ToolCallID = id
 		}
 		if toolType := strings.TrimSpace(getString(payload["type"])); toolType != "" {

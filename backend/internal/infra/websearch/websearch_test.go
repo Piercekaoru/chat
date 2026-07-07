@@ -194,3 +194,34 @@ func TestFetchRejectsInvalidURL(t *testing.T) {
 		t.Fatalf("expected invalid url error")
 	}
 }
+
+// 管理员配置的搜索源地址是可信内网服务：生产环境开启 SSRF 防护时也必须可达；
+// 而 Fetch 抓取模型提供的 URL，内网地址仍要被拦截。
+func TestSSRFProtectionAllowsAdminConfiguredProviderButGuardsFetch(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			"results": []map[string]string{
+				{"title": "Internal OK", "url": "https://a.example.com", "content": "snippet"},
+			},
+		})
+	}))
+	defer server.Close()
+
+	client := NewClientWithEnv("prod", true)
+
+	output, err := client.Search(context.Background(), ProviderConfig{
+		Provider:       ProviderSearXNG,
+		SearXNGBaseURL: server.URL, // httptest 监听 127.0.0.1，属于会被 SSRF 防护拦截的地址
+	}, SearchInput{Query: "test"})
+	if err != nil {
+		t.Fatalf("admin-configured searxng on loopback must be reachable, got: %v", err)
+	}
+	if len(output.Results) != 1 || output.Results[0].Title != "Internal OK" {
+		t.Fatalf("unexpected results: %+v", output.Results)
+	}
+
+	if _, err := client.Fetch(context.Background(), FetchInput{URL: server.URL}); err == nil {
+		t.Fatal("fetch of model-provided loopback url must be rejected under ssrf protection")
+	}
+}

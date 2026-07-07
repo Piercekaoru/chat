@@ -86,6 +86,18 @@ docker compose up -d --force-recreate
 docker inspect deeix-chat-app --format '{{.Image}}'
 ```
 
+> ⚠️ **服务名 ≠ 容器名**：compose 里的 **服务名是 `app`**，而运行中的 **容器名是 `deeix-chat-app`**。
+> 如果只想重建 app 单个服务（不动 searxng），必须用**服务名**：
+> ```bash
+> docker compose up -d --force-recreate app        # ✅ 用服务名 app
+> # docker compose up -d --force-recreate deeix-chat-app   # ❌ 报 "no such service"
+> ```
+> 拿不准服务名时，先查一下：
+> ```bash
+> docker compose config --services   # 输出：app / searxng
+> ```
+> 反过来，`docker inspect` / `docker logs` / `docker exec` 这些针对**容器**的命令，则要用容器名 `deeix-chat-app`。
+
 第 3 步输出的 sha256 应与本地新镜像一致。本地查新镜像 ID：
 ```bash
 docker image inspect openachieve:amd64 --format '{{.Id}}'

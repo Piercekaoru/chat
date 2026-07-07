@@ -19,7 +19,8 @@ func (c *Client) searchSearXNG(ctx context.Context, cfg ProviderConfig, input Se
 	if baseURL == "" {
 		return SearchOutput{}, fmt.Errorf("searxng base url is not configured")
 	}
-	if err := security.ValidateOutboundHTTPURL(baseURL, c.env, c.ssrfProtectionEnabled); err != nil {
+	// 地址由管理员配置，只做协议合法性校验，不做内网限制（自建 SearXNG 通常就在内网）。
+	if err := security.ValidateOutboundHTTPURL(baseURL, c.env, false); err != nil {
 		return SearchOutput{}, fmt.Errorf("searxng base url rejected: %w", err)
 	}
 
@@ -35,7 +36,7 @@ func (c *Client) searchSearXNG(ctx context.Context, cfg ProviderConfig, input Se
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", fetchUserAgent)
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.trustedHTTPClient.Do(req)
 	if err != nil {
 		return SearchOutput{}, fmt.Errorf("searxng request failed: %w", err)
 	}

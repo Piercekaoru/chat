@@ -3,7 +3,7 @@
   "general": "通用",
   "account": "账户",
   "chat": "对话",
-  "subscription": "订阅",
+  "subscription": "用量",
   "navigation": "设置导航",
   "appearance": "外观",
   "language": "语言",
@@ -434,7 +434,7 @@
     }
   },
   "subscriptionPage": {
-    "title": "订阅",
+    "title": "用量",
     "actions": {
       "cancel": "取消",
       "processing": "处理中"

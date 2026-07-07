@@ -200,12 +200,6 @@ export function NavUser({
               </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem onSelect={navigateFromMenu("/setting/subscription")}>
-                {t("upgradePlan")}
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
             {isAdmin ? (
               <DropdownMenuItem onSelect={navigateFromMenu("/admin")}>
                 {t("admin")}

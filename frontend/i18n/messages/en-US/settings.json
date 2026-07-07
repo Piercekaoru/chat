@@ -3,7 +3,7 @@
   "general": "General",
   "account": "Account",
   "chat": "Chat",
-  "subscription": "Subscription",
+  "subscription": "Usage",
   "navigation": "Settings navigation",
   "appearance": "Appearance",
   "language": "Language",
@@ -434,7 +434,7 @@
     }
   },
   "subscriptionPage": {
-    "title": "Subscription",
+    "title": "Usage",
     "actions": {
       "cancel": "Cancel",
       "processing": "Processing"

@@ -31,6 +31,12 @@ import {
 
 type UseLoginPageInput = {
   nextPath: string;
+  /**
+   * When provided, a successful login/registration invokes this callback instead of
+   * navigating to `nextPath`. Used by the in-place login dialog (guest mode) so the
+   * session snapshot broadcast can swap the workspace without a full-page redirect.
+   */
+  onAuthenticated?: () => void;
 };
 
 const VERIFICATION_CODE_RESEND_COOLDOWN_MS = 60_000;
@@ -51,7 +57,7 @@ function parseSecurityVerificationMethods(value: string | null): SecurityVerific
   }
 }
 
-export function useLoginPage({ nextPath }: UseLoginPageInput) {
+export function useLoginPage({ nextPath, onAuthenticated }: UseLoginPageInput) {
   const router = useRouter();
   const t = useTranslations("login");
   const resolveErrorMessage = useLocalizedErrorMessage();
@@ -110,6 +116,12 @@ export function useLoginPage({ nextPath }: UseLoginPageInput) {
   }, [registerCodeCooldownSeconds, resetCodeCooldownSeconds, twoFactorEmailCodeCooldownSeconds]);
 
   React.useEffect(() => {
+    // In dialog mode the guest workspace only mounts this hook when there is no
+    // session, and login success is handled in-place via onAuthenticated. Skip
+    // the "already signed in -> redirect" behavior so the dialog never navigates.
+    if (onAuthenticated) {
+      return undefined;
+    }
     let mounted = true;
     void resolveAccessToken()
       .then((token) => {
@@ -119,7 +131,7 @@ export function useLoginPage({ nextPath }: UseLoginPageInput) {
     return () => {
       mounted = false;
     };
-  }, [resolvedNextPath, router]);
+  }, [onAuthenticated, resolvedNextPath, router]);
 
   React.useEffect(() => {
     const challenge =
@@ -178,8 +190,15 @@ export function useLoginPage({ nextPath }: UseLoginPageInput) {
 
   const completeAuth = React.useCallback((accessToken: string, sessionID: string) => {
     writeSessionSnapshot({ accessToken, sessionID });
+    // The snapshot write broadcasts SESSION_SNAPSHOT_CHANGED_EVENT. In dialog mode the
+    // guest workspace listens for that event and swaps to the authed shell in place, so
+    // we close the dialog instead of navigating away.
+    if (onAuthenticated) {
+      onAuthenticated();
+      return;
+    }
     router.replace(resolvedNextPath);
-  }, [resolvedNextPath, router]);
+  }, [onAuthenticated, resolvedNextPath, router]);
 
   const resetRegisterTurnstile = React.useCallback(() => {
     setRegisterTurnstileToken("");

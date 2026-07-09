@@ -26,9 +26,19 @@ jobs:
         run: |
           set -euo pipefail
 
-          pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test): [A-Za-z0-9 ._-]+$'
+          pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test): [A-Za-z0-9 ._/:-]+$'
 
-          range="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            range="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          else
+            before="${{ github.event.before }}"
+            # New branch pushes report an all-zero "before" SHA; only check the tip commit then.
+            if [[ -z "$before" || "$before" =~ ^0+$ ]]; then
+              range="${{ github.sha }}~1..${{ github.sha }}"
+            else
+              range="${before}..${{ github.sha }}"
+            fi
+          fi
 
           invalid=0
           while IFS= read -r line; do
@@ -48,6 +58,6 @@ jobs:
           if [[ "$invalid" -ne 0 ]]; then
             echo "Commit message subjects must use: type: subject"
             echo "Allowed types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
-            echo "Allowed subject characters: English letters, numbers, spaces, periods, hyphens, and underscores"
+            echo "Allowed subject characters: English letters, numbers, spaces, periods, hyphens, underscores, slashes, and colons"
             exit 1
           fi

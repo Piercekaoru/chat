@@ -17,6 +17,7 @@ import enFiles from "@/i18n/messages/en-US/files.json";
 import enGuide from "@/i18n/messages/en-US/guide.json";
 import enLogin from "@/i18n/messages/en-US/login.json";
 import enPrompts from "@/i18n/messages/en-US/prompts.json";
+import enPromo from "@/i18n/messages/en-US/promo.json";
 import enRecent from "@/i18n/messages/en-US/recent.json";
 import enSettings from "@/i18n/messages/en-US/settings.json";
 import enShare from "@/i18n/messages/en-US/share.json";
@@ -32,6 +33,7 @@ export const DEFAULT_MESSAGES = {
   guide: enGuide,
   chat: enChat,
   announcements: enAnnouncements,
+  promo: enPromo,
   recent: enRecent,
   share: enShare,
   files: enFiles,
@@ -61,6 +63,7 @@ export async function loadLocaleMessages(locale: AppLocale): Promise<AppMessages
     prompts,
     guide,
     chat,
+    promo,
     announcements,
     recent,
     share,
@@ -84,6 +87,7 @@ export async function loadLocaleMessages(locale: AppLocale): Promise<AppMessages
     import("@/i18n/messages/zh-CN/prompts.json"),
     import("@/i18n/messages/zh-CN/guide.json"),
     import("@/i18n/messages/zh-CN/chat.json"),
+    import("@/i18n/messages/zh-CN/promo.json"),
     import("@/i18n/messages/zh-CN/announcements.json"),
     import("@/i18n/messages/zh-CN/recent.json"),
     import("@/i18n/messages/zh-CN/share.json"),
@@ -109,6 +113,7 @@ export async function loadLocaleMessages(locale: AppLocale): Promise<AppMessages
     prompts: prompts.default,
     guide: guide.default,
     chat: chat.default,
+    promo: promo.default,
     announcements: announcements.default,
     recent: recent.default,
     share: share.default,
